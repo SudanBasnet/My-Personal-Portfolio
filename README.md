@@ -81,22 +81,6 @@ Run lint checks:
 npm run lint
 ```
 
-## Deployment Notes
-
-This project is ready for deployment on platforms such as Vercel, Netlify, or Cloudflare Pages.
-
-Recommended build settings:
-
-- Build command: `npm run build`
-- Output directory: `dist`
-
-After purchasing a custom domain, add the final domain URL to `index.html`:
-
-```html
-<link rel="canonical" href="https://yourdomain.com/" />
-<meta property="og:url" content="https://yourdomain.com/" />
-```
-
 ## Project Structure
 
 ```text
