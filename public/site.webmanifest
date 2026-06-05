@@ -1,0 +1,17 @@
+{
+  "name": "Sudan Basnet Portfolio",
+  "short_name": "Sudan Basnet",
+  "description": "Portfolio for Sudan Basnet, a Sydney-based IT Support Engineer and full-stack developer.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050816",
+  "theme_color": "#050816",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
