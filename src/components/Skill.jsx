@@ -1,4 +1,7 @@
+import { motion } from "framer-motion";
 import { Title } from "./Title";
+import { ParallaxSection, Reveal, Stagger } from "./Motion";
+import { itemVariants } from "../lib/motionVariants";
 
 export const Skill = () => {
   const skills = [
@@ -19,50 +22,70 @@ export const Skill = () => {
   ];
 
   const supportStrengths = [
-    "Level 1/2 enterprise desktop support",
-    "IMACD, device lifecycle, SOE, and secure decommissioning",
-    "ServiceNow, SLA tracking, incident escalation, and ITIL-aligned workflows",
-    "M365, Exchange Online, Teams, SharePoint, MFA, VPN, and printer support",
+    ["Enterprise desktop support", 92],
+    ["M365, Intune & Active Directory", 88],
+    ["ITSM, ServiceNow & documentation", 90],
+    ["React & modern frontend development", 82],
   ];
 
   return (
-    <section className="section-wrap" id="skills">
+    <ParallaxSection className="section-wrap" id="skills" accent="cyan">
       <Title title="Skills" />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_0.8fr]">
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        <Stagger className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
           {skills.map((skill) => (
-            <div
+            <motion.div
               key={skill.name}
-              className="glass-panel group rounded-3xl p-5 text-center transition hover:-translate-y-1"
+              variants={itemVariants}
+              whileHover={{ y: -7, scale: 1.02 }}
+              className="glass-panel group rounded-3xl p-5 text-center"
             >
-              <i className={`${skill.icon} ${skill.tone} text-4xl`}></i>
+              <motion.i
+                whileHover={{ rotate: [0, -8, 8, 0] }}
+                className={`${skill.icon} ${skill.tone} text-4xl`}
+              ></motion.i>
               <p className="mt-4 text-sm font-black text-slate-800 dark:text-white">
                 {skill.name}
               </p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </Stagger>
 
-        <div className="led-border glass-panel rounded-3xl p-7">
+        <Reveal className="clean-border glass-panel rounded-3xl p-7">
           <p className="chip mb-5 w-fit">Desktop Support Strengths</p>
           <h3 className="text-2xl font-black text-slate-950 dark:text-white">
             Practical support experience that makes software more usable.
           </h3>
           <div className="mt-6 space-y-3">
-            {supportStrengths.map((strength) => (
-              <div key={strength} className="flex items-center gap-3">
-                <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-cyan-400/15 text-cyan-500">
-                  <i className="fa-solid fa-check text-xs"></i>
-                </span>
-                <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">
-                  {strength}
-                </span>
+            {supportStrengths.map(([strength, level], index) => (
+              <div key={strength}>
+                <div className="mb-2 flex items-center justify-between gap-4">
+                  <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">
+                    {strength}
+                  </span>
+                  <span className="text-xs font-black text-cyan-600 dark:text-cyan-300">
+                    {level}%
+                  </span>
+                </div>
+                <div className="h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-white/10">
+                  <motion.div
+                    className="h-full origin-left rounded-full bg-gradient-to-r from-cyan-400 via-violet-400 to-lime-300"
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: level / 100 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      delay: index * 0.12,
+                      duration: 0.9,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                  />
+                </div>
               </div>
             ))}
           </div>
-        </div>
+        </Reveal>
       </div>
-    </section>
+    </ParallaxSection>
   );
 };

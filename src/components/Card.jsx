@@ -1,14 +1,60 @@
+import { useRef } from "react";
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import { itemVariants } from "../lib/motionVariants";
+
 export const Card = ({ image, github, url, title, description, tech = [] }) => {
+  const cardRef = useRef(null);
+  const reduceMotion = useReducedMotion();
+  const rotateXValue = useMotionValue(0);
+  const rotateYValue = useMotionValue(0);
+  const rotateX = useSpring(rotateXValue, { stiffness: 180, damping: 22 });
+  const rotateY = useSpring(rotateYValue, { stiffness: 180, damping: 22 });
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start end", "end start"],
+  });
+  const imageY = useTransform(scrollYProgress, [0, 1], reduceMotion ? [0, 0] : [-18, 18]);
+
+  const handlePointerMove = (event) => {
+    if (reduceMotion || event.pointerType === "touch") return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width - 0.5;
+    const y = (event.clientY - rect.top) / rect.height - 0.5;
+    rotateXValue.set(y * -7);
+    rotateYValue.set(x * 7);
+  };
+
+  const resetTilt = () => {
+    rotateXValue.set(0);
+    rotateYValue.set(0);
+  };
+
   return (
-    <article className="led-border glass-panel group overflow-hidden rounded-3xl">
-      <div className="aspect-[16/10] overflow-hidden bg-slate-900">
-        <img
+    <motion.article
+      ref={cardRef}
+      variants={itemVariants}
+      whileHover={{ y: -8 }}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={resetTilt}
+      style={{ rotateX, rotateY, transformPerspective: 1000, transformStyle: "preserve-3d" }}
+      className="clean-border glass-panel group overflow-hidden rounded-3xl"
+    >
+      <div className="aspect-[16/10] overflow-hidden bg-slate-900" style={{ transform: "translateZ(20px)" }}>
+        <motion.img
           src={image}
           alt={`${title} preview`}
-          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          style={{ y: imageY, scale: 1.08 }}
+          className="h-[112%] w-full object-cover"
         />
       </div>
-      <div className="p-6">
+      <div className="p-6" style={{ transform: "translateZ(28px)" }}>
         <div className="mb-5 flex flex-wrap gap-2">
           {tech.map((item) => (
             <span
@@ -35,7 +81,7 @@ export const Card = ({ image, github, url, title, description, tech = [] }) => {
               href={github}
               target="_blank"
               rel="noreferrer"
-              className="grid h-11 w-11 place-items-center rounded-full bg-slate-950 text-white transition hover:-translate-y-1 hover:bg-cyan-500 dark:bg-white dark:text-slate-950 dark:hover:bg-cyan-300"
+              className="icon-btn magnetic border-slate-950 bg-slate-950 text-white dark:border-white dark:bg-white dark:text-slate-950"
               aria-label={`${title} GitHub repository`}
             >
             <i className="fa-brands fa-github"></i>
@@ -45,7 +91,7 @@ export const Card = ({ image, github, url, title, description, tech = [] }) => {
                 href={url}
                 target="_blank"
                 rel="noreferrer"
-                className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white text-slate-800 transition hover:-translate-y-1 hover:border-cyan-400 hover:text-cyan-500 dark:border-white/10 dark:bg-white/10 dark:text-white"
+                className="icon-btn magnetic"
                 aria-label={`${title} live site`}
               >
                 <i className="fa-solid fa-arrow-up-right-from-square"></i>
@@ -54,6 +100,6 @@ export const Card = ({ image, github, url, title, description, tech = [] }) => {
           </div>
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 };

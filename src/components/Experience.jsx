@@ -1,4 +1,7 @@
+import { motion } from "framer-motion";
 import { Title } from "./Title";
+import { ParallaxSection, Reveal, Stagger } from "./Motion";
+import { itemVariants } from "../lib/motionVariants";
 
 const enterpriseClients = [
   {
@@ -68,13 +71,32 @@ const certifications = [
 
 export const Experience = () => {
   return (
-    <section className="section-wrap" id="experience">
+    <ParallaxSection className="section-wrap" id="experience" accent="violet">
       <Title title="Enterprise Experience" />
 
       <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
-        <div className="space-y-6">
-          {roles.map((role) => (
-            <article key={role.company} className="led-border glass-panel rounded-3xl p-7">
+        <Stagger className="relative space-y-6 pl-8">
+          <motion.div
+            className="absolute bottom-6 left-2 top-6 w-px origin-top bg-gradient-to-b from-cyan-400 via-violet-400 to-lime-300"
+            initial={{ scaleY: 0 }}
+            whileInView={{ scaleY: 1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          />
+          {roles.map((role, index) => (
+            <motion.article
+              key={role.company}
+              variants={itemVariants}
+              whileHover={{ y: -5 }}
+              className="clean-border glass-panel relative rounded-3xl p-7"
+            >
+              <motion.span
+                initial={{ scale: 0 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.2, type: "spring", stiffness: 300 }}
+                className="absolute -left-[2.16rem] top-8 h-4 w-4 rounded-full border-4 border-white bg-cyan-400 shadow-md dark:border-slate-950"
+              />
               <p className="chip mb-5 w-fit">{role.company}</p>
               <h3 className="text-2xl font-black text-slate-950 dark:text-white">
                 {role.title}
@@ -92,20 +114,21 @@ export const Experience = () => {
                   </div>
                 ))}
               </div>
-            </article>
+            </motion.article>
           ))}
-        </div>
+        </Stagger>
 
         <div className="space-y-6">
-          <div className="glass-panel rounded-3xl p-7">
+          <Reveal className="glass-panel rounded-3xl p-7">
             <p className="chip mb-5 w-fit">Enterprise Clients</p>
             <h3 className="text-2xl font-black text-slate-950 dark:text-white">
               Multi-site support for global teams and high-pressure environments.
             </h3>
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               {enterpriseClients.map((client) => (
-                <article
+                <motion.article
                   key={client.name}
+                  whileHover={{ y: -4, borderColor: "rgba(34, 211, 238, 0.45)" }}
                   className="rounded-3xl border border-slate-200 bg-white/70 p-5 dark:border-white/10 dark:bg-white/5"
                 >
                   <p className="text-lg font-black text-slate-950 dark:text-white">
@@ -117,12 +140,12 @@ export const Experience = () => {
                   <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
                     {client.work}
                   </p>
-                </article>
+                </motion.article>
               ))}
             </div>
-          </div>
+          </Reveal>
 
-          <div className="led-border glass-panel rounded-3xl p-7">
+          <Reveal className="clean-border glass-panel rounded-3xl p-7">
             <p className="chip mb-5 w-fit">Education & Credentials</p>
             <div className="grid gap-3 sm:grid-cols-2">
               {certifications.map((item) => (
@@ -139,9 +162,9 @@ export const Experience = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </Reveal>
         </div>
       </div>
-    </section>
+    </ParallaxSection>
   );
 };

@@ -4,6 +4,7 @@ import Project2 from "../assets/Project2.png";
 import Project4 from "../assets/Project4.png";
 import { Card } from "./Card";
 import { Title } from "./Title";
+import { ParallaxSection, Stagger } from "./Motion";
 
 export const Project = () => {
   const projects = [
@@ -46,14 +47,14 @@ export const Project = () => {
   ];
 
   return (
-    <section className="section-wrap" id="projects">
+    <ParallaxSection className="section-wrap" id="projects" accent="lime">
       <Title title="Selected Projects" />
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <Stagger className="grid gap-6 md:grid-cols-2">
         {projects.map((project) => (
           <Card key={project.title} {...project} />
         ))}
-      </div>
-    </section>
+      </Stagger>
+    </ParallaxSection>
   );
 };

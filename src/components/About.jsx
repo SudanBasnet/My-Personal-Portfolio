@@ -1,5 +1,7 @@
+import { motion } from "framer-motion";
 import photo from "../assets/sudan.png";
 import { Title } from "./Title";
+import { ParallaxSection, Reveal } from "./Motion";
 
 export const About = () => {
   const focusAreas = [
@@ -15,21 +17,23 @@ export const About = () => {
   ];
 
   return (
-    <section className="section-wrap" id="about">
+    <ParallaxSection className="section-wrap" id="about" accent="cyan">
       <Title title="About Me" />
 
       <div className="grid items-center gap-8 lg:grid-cols-[0.82fr_1.18fr]">
-        <div className="led-border glass-panel overflow-hidden rounded-[2rem] p-3">
+        <Reveal className="clean-border glass-panel overflow-hidden rounded-[2rem] p-3">
           <div className="overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-cyan-100 via-white to-violet-100 dark:from-slate-950 dark:via-slate-900 dark:to-cyan-950">
-            <img
+            <motion.img
               src={photo}
               alt="Sudan Basnet"
+              whileHover={{ scale: 1.04 }}
+              transition={{ duration: 0.4 }}
               className="mx-auto h-[420px] object-contain object-bottom"
             />
           </div>
-        </div>
+        </Reveal>
 
-        <div className="glass-panel rounded-[2rem] p-7 sm:p-10">
+        <Reveal className="glass-panel rounded-[2rem] p-7 sm:p-10" delay={0.1}>
           <p className="chip mb-5 w-fit">Profile</p>
           <h3 className="text-3xl font-black text-slate-950 dark:text-white sm:text-4xl">
             I solve user problems today and build better software for tomorrow.
@@ -53,12 +57,13 @@ export const About = () => {
 
           <div className="mt-6 flex flex-wrap gap-2">
             {focusAreas.map((area) => (
-              <span
+              <motion.span
                 key={area}
+                whileHover={{ y: -3, scale: 1.03 }}
                 className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-700 dark:border-white/10 dark:bg-white/10 dark:text-slate-200"
               >
                 {area}
-              </span>
+              </motion.span>
             ))}
           </div>
 
@@ -80,8 +85,8 @@ export const About = () => {
               </p>
             </div>
           </div>
-        </div>
+        </Reveal>
       </div>
-    </section>
+    </ParallaxSection>
   );
 };

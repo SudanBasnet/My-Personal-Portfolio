@@ -72,7 +72,7 @@ export const Footer = () => {
       </footer>
       <a
         href="#hero"
-        className="fixed bottom-5 right-5 z-40 grid h-12 w-12 place-items-center rounded-full bg-cyan-400 text-slate-950 shadow-[0_0_24px_rgba(34,211,238,0.7)] transition hover:-translate-y-1"
+        className="icon-btn magnetic fixed bottom-5 right-5 z-40 h-12 w-12 border-cyan-300 bg-cyan-400 text-slate-950 shadow-[0_0_24px_rgba(34,211,238,0.55)] hover:bg-cyan-300 dark:bg-cyan-400 dark:text-slate-950"
         aria-label="Back to top"
       >
         <i className="fa-solid fa-angle-up"></i>
