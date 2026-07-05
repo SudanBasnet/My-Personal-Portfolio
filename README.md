@@ -5,7 +5,7 @@ A modern personal portfolio for **Sudan Basnet**, an Enterprise Desktop Support 
 The site is built to present both sides of the profile clearly: enterprise-level end-user computing support and practical full-stack development work.
 
 ## Published site:
-https://my-personal-portfolio-zbez.onrender.com/
+https://www.sudanbasnet.com/
 
 ## Highlights
 
