@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   motion,
   useReducedMotion,
@@ -16,9 +16,16 @@ import { About } from "./components/About";
 import { Contact } from "./components/Contact";
 import { Footer } from "./components/Footer";
 import { InteractiveEffects } from "./components/InteractiveEffects";
+import { CommandPalette } from "./components/CommandPalette";
+import { ThemeToggle } from "./components/ThemeToggle";
 
 function App() {
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(() => {
+    const savedTheme = window.localStorage.getItem("portfolio-theme");
+    if (savedTheme) return savedTheme === "dark";
+    return true;
+  });
+  const [isCommandOpen, setIsCommandOpen] = useState(false);
   const reduceMotion = useReducedMotion();
   const { scrollY, scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -39,27 +46,49 @@ function App() {
   const backLayerY = useSpring(backLayerTarget, { stiffness: 35, damping: 20 });
   const midLayerY = useSpring(midLayerTarget, { stiffness: 55, damping: 24 });
 
+  useEffect(() => {
+    window.localStorage.setItem("portfolio-theme", isDark ? "dark" : "light");
+    document.documentElement.style.colorScheme = isDark ? "dark" : "light";
+  }, [isDark]);
+
+  useEffect(() => {
+    const openCommandMenu = () => setIsCommandOpen(true);
+    document.addEventListener("open-command-menu", openCommandMenu);
+    return () => document.removeEventListener("open-command-menu", openCommandMenu);
+  }, []);
+
+  const toggleTheme = () => setIsDark((current) => !current);
+
   return (
     <div className={isDark ? "dark" : ""}>
       <div className="page-shell">
+        <a href="#main-content" className="skip-link">Skip to content</a>
         <InteractiveEffects />
+        <CommandPalette
+          isOpen={isCommandOpen}
+          onClose={() => setIsCommandOpen(false)}
+          onThemeToggle={toggleTheme}
+        />
         <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
           <motion.div
-            className="absolute -left-48 top-[18vh] h-[30rem] w-[30rem] rounded-full bg-cyan-300/10 blur-3xl dark:bg-cyan-500/[0.07]"
+            className="absolute -left-48 top-[18vh] h-[34rem] w-[34rem] rounded-full bg-pink-400/10 blur-3xl dark:bg-[#4c65f7]/10"
             style={{ y: backLayerY }}
           />
           <motion.div
-            className="absolute -right-52 top-[75vh] h-[34rem] w-[34rem] rounded-full bg-violet-400/10 blur-3xl dark:bg-violet-500/[0.07]"
+            className="absolute -right-52 top-[75vh] h-[38rem] w-[38rem] rounded-full bg-orange-400/10 blur-3xl dark:bg-[#ff62aa]/10"
             style={{ y: midLayerY }}
           />
         </div>
         <motion.div
-          className="fixed inset-x-0 top-0 z-[60] h-1 origin-left bg-gradient-to-r from-cyan-400 via-violet-400 to-lime-300"
+          className="fixed inset-x-0 top-0 z-[90] h-[3px] origin-left bg-gradient-to-r from-[#ff62aa] via-[#4c65f7] to-[#ffb449]"
           style={{ scaleX }}
         />
-        <div className="relative z-10">
-          <Navbar isDark={isDark} onThemeToggle={() => setIsDark(!isDark)} />
-          <main>
+        <div className="relative z-10 lg:pb-[4.6rem]">
+          <Navbar
+            onCommandOpen={() => setIsCommandOpen(true)}
+          />
+          <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
+          <main id="main-content">
             <Hero />
             <Banner />
             <Skill />

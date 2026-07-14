@@ -30,24 +30,25 @@ export const Banner = () => {
 
   return (
     <ParallaxSection className="section-wrap pt-0" accent="violet">
-      <Stagger className="grid gap-4 md:grid-cols-3">
-        {highlights.map((item) => (
+      <Stagger className="grid overflow-hidden rounded-[2rem] border border-black/15 bg-black text-white dark:border-white/15 md:grid-cols-3">
+        {highlights.map((item, index) => (
           <motion.div
             key={item.label}
             variants={itemVariants}
             whileHover={{ y: -7, transition: { duration: 0.2 } }}
-            className="clean-border glass-panel rounded-3xl p-6"
+            className="relative border-b border-white/15 p-7 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0 sm:p-9"
           >
-            <div className="mb-5 grid h-12 w-12 place-items-center rounded-2xl bg-slate-950 text-cyan-300 shadow-lg shadow-cyan-500/20 dark:bg-white dark:text-slate-950">
+            <span className="absolute right-6 top-5 font-editorial text-3xl text-white/25">0{index + 1}</span>
+            <div className="mb-10 grid h-12 w-12 place-items-center rounded-full border border-white/25 text-[#ff8fc2]">
               <i className={item.icon}></i>
             </div>
-            <p className="text-sm font-bold uppercase tracking-[0.18em] text-cyan-600 dark:text-cyan-300">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-white/50">
               {item.label}
             </p>
-            <h3 className="mt-2 text-xl font-black text-slate-950 dark:text-white">
+            <h3 className="mt-3 font-editorial text-5xl font-light leading-none text-white sm:text-6xl">
               <Counter value={item.value} suffix={item.suffix} />
             </h3>
-            <p className="mt-2 text-sm font-semibold text-slate-500 dark:text-slate-400">
+            <p className="mt-4 text-sm font-semibold text-white/45">
               {item.detail}
             </p>
           </motion.div>

@@ -57,9 +57,9 @@ export const ParallaxSection = ({
   const ringRotate = useTransform(scrollYProgress, [0, 1], reduceMotion ? [0, 0] : [-12, 18]);
 
   const tones = {
-    cyan: "bg-cyan-400/10 dark:bg-cyan-400/[0.07]",
-    violet: "bg-violet-400/10 dark:bg-violet-400/[0.07]",
-    lime: "bg-lime-400/10 dark:bg-lime-400/[0.06]",
+    cyan: "bg-[#4c65f7]/15 dark:bg-[#4c65f7]/10",
+    violet: "bg-[#ff62aa]/15 dark:bg-[#ff62aa]/10",
+    lime: "bg-[#ffb449]/18 dark:bg-[#f37133]/10",
   };
 
   return (

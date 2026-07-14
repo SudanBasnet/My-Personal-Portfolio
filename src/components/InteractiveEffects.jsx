@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 const particles = [
   ["8%", "18%", 6, 0],
@@ -13,13 +13,7 @@ const particles = [
 
 export const InteractiveEffects = () => {
   const reduceMotion = useReducedMotion();
-  const [ready, setReady] = useState(false);
   const [cursor, setCursor] = useState({ x: -100, y: -100, active: false });
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setReady(true), 1050);
-    return () => window.clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     if (reduceMotion || !window.matchMedia("(pointer: fine)").matches) return undefined;
@@ -63,7 +57,7 @@ export const InteractiveEffects = () => {
       });
       cleanups.forEach((cleanup) => cleanup());
     };
-  }, [ready, reduceMotion]);
+  }, [reduceMotion]);
 
   return (
     <>
@@ -71,7 +65,7 @@ export const InteractiveEffects = () => {
         {particles.map(([left, top, size, delay]) => (
           <motion.span
             key={`${left}-${top}`}
-            className="absolute rounded-full bg-cyan-400/30 dark:bg-cyan-300/20"
+            className="absolute rounded-full bg-[#4c65f7]/30 dark:bg-[#ff62aa]/25"
             style={{ left, top, width: size, height: size }}
             animate={reduceMotion ? {} : { y: [0, -24, 0], opacity: [0.25, 0.75, 0.25] }}
             transition={{ duration: 5 + delay, delay, repeat: Infinity, ease: "easeInOut" }}
@@ -90,33 +84,6 @@ export const InteractiveEffects = () => {
         }}
         transition={{ type: "spring", stiffness: 500, damping: 35, mass: 0.2 }}
       />
-
-      <AnimatePresence>
-        {!ready && (
-          <motion.div
-            className="fixed inset-0 z-[100] grid place-items-center bg-slate-950 text-white"
-            exit={{ opacity: 0, transition: { duration: 0.45 } }}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ y: -20, opacity: 0 }}
-              className="text-center"
-            >
-              <motion.div
-                animate={reduceMotion ? {} : { rotate: 360 }}
-                transition={{ duration: 1, ease: "linear", repeat: Infinity }}
-                className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-cyan-400 to-lime-300 text-xl font-black text-slate-950"
-              >
-                SB
-              </motion.div>
-              <p className="mt-5 text-xs font-black uppercase tracking-[0.35em] text-slate-400">
-                Support. Build. Improve.
-              </p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 };
