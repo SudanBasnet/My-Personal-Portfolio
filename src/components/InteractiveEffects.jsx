@@ -74,7 +74,7 @@ export const InteractiveEffects = () => {
       </div>
 
       <motion.div
-        className="cursor-glow"
+        className="pointer-events-none fixed z-[90] hidden rounded-full border border-[#ff62aa]/65 bg-[#ff62aa]/10 mix-blend-difference md:block"
         animate={{
           x: cursor.x - (cursor.active ? 24 : 16),
           y: cursor.y - (cursor.active ? 24 : 16),

@@ -11,8 +11,11 @@ import { itemVariants } from "../lib/motionVariants";
 
 export const Card = ({
   image,
-  github,
-  url,
+  imageAlt,
+  screenshots = [],
+  screenshotHint = "Hover for next view",
+  sourceLinks = [],
+  liveLinks = [],
   title,
   description,
   tech = [],
@@ -20,9 +23,11 @@ export const Card = ({
   focus,
   index = 0,
   featured = false,
-  mediaFit = "cover",
 }) => {
   const cardRef = useRef(null);
+  const projectScreenshots = screenshots.length
+    ? screenshots.slice(0, 2)
+    : [{ src: image, alt: imageAlt || `${title} preview` }];
   const reduceMotion = useReducedMotion();
   const rotateXValue = useMotionValue(0);
   const rotateYValue = useMotionValue(0);
@@ -62,26 +67,40 @@ export const Card = ({
         className={`relative overflow-hidden bg-slate-900 ${featured ? "min-h-[300px] md:min-h-[470px]" : "aspect-[16/10]"}`}
         style={{ transform: "translateZ(20px)" }}
       >
-        <motion.img
-          src={image}
-          alt={`${title} preview`}
-          style={{ y: imageY, scale: 1.08 }}
-          loading="lazy"
-          decoding="async"
-          className={`h-[112%] w-full transition duration-700 ${mediaFit === "contain" ? "object-contain p-8 sm:p-12" : "object-cover"}`}
-        />
+        {projectScreenshots.map((screenshot, screenshotIndex) => (
+          <motion.img
+            key={screenshot.src}
+            src={screenshot.src}
+            alt={screenshot.alt}
+            style={{ y: imageY, scale: 1.08 }}
+            loading="lazy"
+            decoding="async"
+            className={`absolute inset-0 h-[112%] w-full object-cover transition-[transform,opacity] duration-700 motion-reduce:transition-none ${
+              projectScreenshots.length > 1 && screenshotIndex === 0
+                ? "opacity-100 group-hover:opacity-0 group-focus-within:opacity-0"
+                : screenshotIndex > 0
+                  ? "opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
+                  : "opacity-100"
+            }`}
+          />
+        ))}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent opacity-80"></div>
         <div className="absolute left-5 top-5 flex items-center gap-2">
           <span className="rounded-full border border-white/20 bg-slate-950/60 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-white backdrop-blur-xl">
             {String(index + 1).padStart(2, "0")}
           </span>
-          {url && (
+          {liveLinks.length > 0 && (
             <span className="flex items-center gap-2 rounded-full border border-[#ffb449]/40 bg-[#f37133]/20 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-[#ffd89a] backdrop-blur-xl">
               <span className="h-1.5 w-1.5 rounded-full bg-[#ffb449] shadow-[0_0_10px_#ffb449]"></span>
               Live
             </span>
           )}
         </div>
+        {projectScreenshots.length > 1 && (
+          <span className="absolute right-5 top-5 hidden rounded-full border border-white/20 bg-slate-950/60 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-white/75 backdrop-blur-xl sm:block">
+            {screenshotHint}
+          </span>
+        )}
       </div>
       <div className={`relative flex flex-col p-6 sm:p-7 ${featured ? "justify-center md:p-10" : ""}`} style={{ transform: "translateZ(28px)" }}>
         <span className="pointer-events-none absolute right-5 top-2 font-editorial text-[7rem] font-light leading-none text-white/[0.045]">
@@ -116,26 +135,33 @@ export const Card = ({
           </div>
 
           <div className="mt-7 flex flex-wrap gap-3">
-            <a
-              href={github}
-              target="_blank"
-              rel="noreferrer"
-              className="btn magnetic min-h-11 border border-white/25 bg-transparent px-5 py-2.5 text-white hover:-translate-y-1 hover:border-[#ff62aa] hover:bg-[#ff62aa] hover:text-black"
-            >
-              <i className="fa-brands fa-github"></i>
-              Source code
-            </a>
-            {url && (
+            {sourceLinks.map((link) => (
               <a
-                href={url}
+                key={link.href}
+                href={link.href}
                 target="_blank"
                 rel="noreferrer"
-                className="btn btn-primary magnetic min-h-11 px-5 py-2.5"
+                className="btn magnetic min-h-11 border border-white/25 bg-transparent px-5 py-2.5 text-white hover:-translate-y-1 hover:border-[#ff62aa] hover:bg-[#ff62aa] hover:text-black"
               >
-                Live demo
-                <i className="fa-solid fa-arrow-up-right-from-square"></i>
+                <i className="fa-brands fa-github"></i>
+                {link.label}
               </a>
-            )}
+            ))}
+            {liveLinks.map((link) => {
+              const isInternal = link.href.startsWith("/");
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target={isInternal ? undefined : "_blank"}
+                  rel={isInternal ? undefined : "noreferrer"}
+                  className="btn btn-primary magnetic min-h-11 px-5 py-2.5"
+                >
+                  {link.label}
+                  <i className="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+              );
+            })}
           </div>
         </div>
       </div>

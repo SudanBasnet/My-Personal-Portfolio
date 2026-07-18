@@ -1,27 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
-  <title id="title">Sudan Basnet favicon</title>
-  <desc id="desc">SB monogram with cyan and violet LED glow.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Sudan Basnet</title>
+  <desc id="desc">SB monogram orbiting a pink, violet, and blue digital world.</desc>
   <defs>
-    <linearGradient id="bg" x1="12" x2="84" y1="10" y2="88" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#050816"/>
-      <stop offset="0.58" stop-color="#111827"/>
-      <stop offset="1" stop-color="#0f172a"/>
+    <linearGradient id="edge" x1="8" y1="7" x2="57" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff62aa"/>
+      <stop offset=".52" stop-color="#b25cfa"/>
+      <stop offset="1" stop-color="#4c65f7"/>
     </linearGradient>
-    <linearGradient id="stroke" x1="15" x2="83" y1="14" y2="82" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#22d3ee"/>
-      <stop offset="0.52" stop-color="#a78bfa"/>
-      <stop offset="1" stop-color="#a3e635"/>
-    </linearGradient>
-    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
-      <feGaussianBlur stdDeviation="4" result="blur"/>
+    <radialGradient id="world" cx="0" cy="0" r="1" gradientTransform="translate(24 21) rotate(48) scale(35)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffd9e9"/>
+      <stop offset=".2" stop-color="#ff62aa"/>
+      <stop offset=".56" stop-color="#a24df0"/>
+      <stop offset="1" stop-color="#17205c"/>
+    </radialGradient>
+    <filter id="glow" x="-35%" y="-35%" width="170%" height="170%">
+      <feGaussianBlur stdDeviation="2.4" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
-  <rect width="88" height="88" x="4" y="4" fill="url(#bg)" rx="24"/>
-  <rect width="78" height="78" x="9" y="9" fill="none" stroke="url(#stroke)" stroke-width="3" rx="21" filter="url(#glow)"/>
-  <path fill="#22d3ee" d="M28 60.2c3.5 2.6 7.8 3.9 12.9 3.9 5.2 0 8.4-1.7 8.4-4.9 0-3-2.4-4.3-9.2-5.7-8.5-1.8-13.8-5.1-13.8-12.8 0-7.5 6.2-12.9 15.7-12.9 6 0 10.6 1.5 14.4 4.2l-4.6 7.1c-3.1-2.1-6.3-3.1-9.8-3.1-4.6 0-7.1 1.8-7.1 4.4 0 3 2.7 4 9.8 5.6 8.7 2 13.2 5.7 13.2 12.7 0 8-6.5 13.6-17 13.6-7.1 0-13.1-2-17.1-5.2z"/>
-  <path fill="#f8fafc" d="M56.5 28.6h13.3c8.4 0 13.3 4.1 13.3 11 0 4.3-2.1 7.4-5.8 9 4.6 1.4 7.2 5 7.2 10 0 7.9-5.8 12.7-14.7 12.7H56.5zm12.2 17c3.7 0 5.9-1.8 5.9-5 0-3-2.1-4.7-5.8-4.7h-3.6v9.7zm.8 18.4c4 0 6.3-2 6.3-5.5s-2.3-5.4-6.5-5.4h-4.1V64z"/>
+
+  <rect width="60" height="60" x="2" y="2" rx="15" fill="#07070b"/>
+  <rect width="58" height="58" x="3" y="3" rx="14" fill="none" stroke="url(#edge)" stroke-opacity=".72" stroke-width="2"/>
+
+  <circle cx="32" cy="32" r="19" fill="url(#world)" opacity=".94"/>
+  <ellipse cx="32" cy="32" rx="26" ry="9" fill="none" stroke="url(#edge)" stroke-width="1.6" transform="rotate(-22 32 32)" filter="url(#glow)"/>
+  <circle cx="55" cy="21" r="2.2" fill="#ffb449"/>
+
+  <g fill="none" stroke="#fffaf5" stroke-linecap="round" stroke-linejoin="round" stroke-width="4.2">
+    <path d="M29 21c-2.7-3-10.4-3.4-12.1 1.5-2.2 6.3 12.3 4.7 12.3 11.7 0 6.9-9.3 9.5-14.2 4.6"/>
+    <path d="M36.2 19v25m.2-24h6.2c4.6 0 7.2 2.2 7.2 5.8 0 3.8-2.8 6-7.4 6h-6m6.2 0c5 0 8 2.2 8 6.2 0 3.8-2.8 6-8 6h-6.2"/>
+  </g>
 </svg>

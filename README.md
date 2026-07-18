@@ -2,10 +2,25 @@
 
 A modern personal portfolio for **Sudan Basnet**, an Enterprise Desktop Support Engineer in Sydney with hands-on experience across Microsoft 365, Intune, Active Directory, Autopilot, ServiceNow, ITSM workflows, Windows endpoints, and React/MERN projects.
 
-The site is built to present both sides of the profile clearly: enterprise-level end-user computing support and practical full-stack development work.
+The site presents both sides of the profile clearly: enterprise-level end-user computing support and practical full-stack development work. Visitors can choose between a polished classic portfolio and a separate, scroll-driven 3D experience.
 
-## Published site:
-https://www.sudanbasnet.com/
+## Live Portfolios
+
+### Classic Portfolio
+
+[Open the classic portfolio](https://www.sudanbasnet.com/)
+
+[![Sudan Basnet classic portfolio preview](docs/screenshots/classic-portfolio.jpg)](https://www.sudanbasnet.com/)
+
+The main experience uses a responsive editorial layout, theme controls, motion effects, professional experience, skills, project case studies, and contact details.
+
+### Immersive 3D Portfolio
+
+[Enter the immersive portfolio](https://www.sudanbasnet.com/immersive/)
+
+[![Sudan Basnet immersive 3D portfolio preview](docs/screenshots/immersive-portfolio.jpg)](https://www.sudanbasnet.com/immersive/)
+
+The immersive route reinterprets the same portfolio content with Three.js skill planets, scroll-driven camera movement, layered parallax, sticky storytelling sections, and a reduced-motion fallback.
 
 ## Highlights
 
@@ -14,6 +29,9 @@ https://www.sudanbasnet.com/
 - Responsive navigation with mobile menu support
 - Enterprise experience section based on real resume content
 - Project showcase with live links, GitHub links, screenshots, and tech tags
+- Separate `/immersive/` experience with a lazy-loaded Three.js scene
+- Shared project data across the classic and immersive presentations
+- Reduced-motion support across interface and 3D animation
 - SEO-ready metadata, Open Graph tags, structured data, favicon, manifest, and robots file
 - Resume download integration
 - Production build and ESLint verification
@@ -23,6 +41,8 @@ https://www.sudanbasnet.com/
 - React
 - Vite
 - Tailwind CSS
+- Framer Motion
+- Three.js
 - JavaScript
 - Font Awesome
 - Devicon
@@ -87,26 +107,29 @@ npm run lint
 ## Project Structure
 
 ```text
-src/
-  assets/
-  components/
-    About.jsx
-    Banner.jsx
-    Card.jsx
-    Contact.jsx
-    Experience.jsx
-    Footer.jsx
-    Hero.jsx
-    Navbar.jsx
-    Project.jsx
-    Skill.jsx
-    Title.jsx
-  App.jsx
-  index.css
+docs/
+  screenshots/
+    classic-portfolio.jpg
+    immersive-portfolio.jpg
+immersive/
+  index.html
 public/
   favicon.svg
   robots.txt
   site.webmanifest
+src/
+  assets/
+  components/
+  data/
+    projects.js
+  experiments/
+    immersive/
+  hooks/
+  lib/
+  App.jsx
+  Root.jsx
+  index.css
+  main.jsx
 ```
 
 ## Contact

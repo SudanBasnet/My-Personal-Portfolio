@@ -63,15 +63,19 @@ export const ParallaxSection = ({
   };
 
   return (
-    <motion.section ref={sectionRef} className={`parallax-section ${className}`} {...props}>
+    <motion.section
+      ref={sectionRef}
+      className={`relative isolate overflow-clip ${className}`}
+      {...props}
+    >
       <motion.span
         aria-hidden="true"
-        className={`parallax-orb -right-28 top-1/4 ${tones[accent] || tones.cyan}`}
+        className={`pointer-events-none absolute -right-28 top-1/4 -z-10 h-80 w-80 rounded-full blur-3xl ${tones[accent] || tones.cyan}`}
         style={{ y: orbY }}
       />
       <motion.span
         aria-hidden="true"
-        className="parallax-ring -left-20 bottom-16"
+        className="pointer-events-none absolute -left-20 bottom-16 -z-10 h-56 w-56 rounded-full border border-black/10 shadow-[inset_0_0_0_28px_rgba(255,98,170,0.035),inset_0_0_0_58px_rgba(76,101,247,0.035)] dark:border-white/10"
         style={{ y: ringY, rotate: ringRotate }}
       />
       <div className="relative z-10">{children}</div>

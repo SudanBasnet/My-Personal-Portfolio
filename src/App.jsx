@@ -18,8 +18,11 @@ import { Footer } from "./components/Footer";
 import { InteractiveEffects } from "./components/InteractiveEffects";
 import { CommandPalette } from "./components/CommandPalette";
 import { ThemeToggle } from "./components/ThemeToggle";
+import EntryLoader from "./components/EntryLoader";
+import useEntryLoader from "./hooks/useEntryLoader";
 
 function App() {
+  const showEntryLoader = useEntryLoader(true, 700);
   const [isDark, setIsDark] = useState(() => {
     const savedTheme = window.localStorage.getItem("portfolio-theme");
     if (savedTheme) return savedTheme === "dark";
@@ -61,8 +64,14 @@ function App() {
 
   return (
     <div className={isDark ? "dark" : ""}>
+      {showEntryLoader && <EntryLoader />}
       <div className="page-shell">
-        <a href="#main-content" className="skip-link">Skip to content</a>
+        <a
+          href="#main-content"
+          className="fixed left-4 top-4 z-[200] -translate-y-[180%] rounded-full bg-cyan-400 px-5 py-3 text-sm font-black text-slate-900 transition-transform focus:translate-y-0"
+        >
+          Skip to content
+        </a>
         <InteractiveEffects />
         <CommandPalette
           isOpen={isCommandOpen}
@@ -88,6 +97,27 @@ function App() {
             onCommandOpen={() => setIsCommandOpen(true)}
           />
           <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
+          <motion.a
+            href="/immersive"
+            className="group fixed bottom-5 right-4 z-[76] flex min-h-14 items-center gap-3 rounded-full border border-white/20 bg-[#09090c]/92 p-1.5 pr-5 text-white shadow-[0_16px_48px_rgba(0,0,0,0.38),0_0_34px_rgba(178,92,250,0.22)] backdrop-blur-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff62aa] lg:bottom-24 lg:right-5"
+            whileHover={reduceMotion ? {} : { y: -4, scale: 1.025 }}
+            whileTap={reduceMotion ? {} : { scale: 0.97 }}
+            aria-label="Open the immersive 3D portfolio experience"
+          >
+            <span className="relative grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-[radial-gradient(circle_at_32%_28%,#ffd4e8_0%,#ff62aa_17%,#b25cfa_48%,#4c65f7_76%,#111126_100%)] shadow-[inset_-8px_-10px_18px_rgba(10,5,35,0.5),0_0_20px_rgba(255,98,170,0.42)] group-hover:animate-[spin_4s_linear_infinite] motion-reduce:group-hover:animate-none">
+              <span className="absolute h-[3.6rem] w-[1.15rem] rotate-[62deg] rounded-full border border-white/60" />
+              <span className="relative text-[10px] font-black tracking-[-0.04em]">3D</span>
+            </span>
+            <span className="text-left leading-none">
+              <span className="block text-[8px] font-black uppercase tracking-[0.22em] text-[#ff8fc2]">
+                Enter
+              </span>
+              <span className="mt-1.5 block text-xs font-black uppercase tracking-[0.08em]">
+                3D Experience
+              </span>
+            </span>
+            <span className="text-sm text-white/45 transition group-hover:translate-x-1 group-hover:text-white" aria-hidden="true">→</span>
+          </motion.a>
           <main id="main-content">
             <Hero />
             <Banner />
