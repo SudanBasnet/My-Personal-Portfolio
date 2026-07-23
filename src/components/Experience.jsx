@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Title } from "./Title";
 import { ParallaxSection, Reveal, Stagger } from "./Motion";
 import { itemVariants } from "../lib/motionVariants";
+import { ClientLogoShowcase } from "./ClientLogoShowcase";
 
 const enterpriseClients = [
   {
@@ -83,6 +84,8 @@ export const Experience = () => {
         chapter="02"
         subtitle="Hands-on endpoint, identity, collaboration and service-desk support across global client environments."
       />
+
+      <ClientLogoShowcase />
 
       <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
         <Stagger className="relative space-y-6 pl-8">

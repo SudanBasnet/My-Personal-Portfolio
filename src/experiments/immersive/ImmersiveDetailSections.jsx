@@ -1,3 +1,5 @@
+import { ClientLogoShowcase } from "../../components/ClientLogoShowcase";
+
 const detailSectionClass =
   "relative scroll-mt-12 px-[clamp(1.25rem,6vw,7rem)] py-[clamp(7rem,12vw,12rem)] max-[620px]:py-24";
 
@@ -131,6 +133,9 @@ export const ExperienceSection = ({ roles, clients }) => (
       description="Hands-on endpoint, identity, collaboration and service-desk support across global environments."
       light
     />
+    <div className="mt-[clamp(4rem,8vw,8rem)]">
+      <ClientLogoShowcase immersive />
+    </div>
     <div className="mt-[clamp(4rem,8vw,8rem)] grid grid-cols-2 border-l border-t border-black/20 max-[900px]:grid-cols-1">
       {roles.map((role, index) => (
         <article
