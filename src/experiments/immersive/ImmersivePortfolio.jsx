@@ -15,6 +15,7 @@ import {
   SkillsSection,
 } from "./ImmersiveDetailSections";
 import SystemsScene from "./SystemsScene";
+import "./immersive-portfolio.css";
 
 const clamp = (value, min = 0, max = 1) =>
   Math.min(Math.max(value, min), max);
@@ -109,7 +110,7 @@ const roles = [
     company: "Total IT Global",
     meta: "Enterprise Contractor / Sydney / 2025 - Present",
     bullets: [
-      "Multi-client enterprise field support across globally recognised organisations.",
+      "Multi-client enterprise field support across globally recognised organisations, including a current assignment with JLL.",
       "Endpoint provisioning, IMACD, secure decommissioning, OS deployment and lifecycle workflows.",
       "Microsoft 365, Azure AD, Intune, Autopilot, Active Directory, VPN, printers, AV and conferencing support.",
       "ServiceNow incidents, SLA expectations, documentation and escalation to L3 teams.",
@@ -129,6 +130,7 @@ const roles = [
 ];
 
 const clients = [
+  ["JLL", "Commercial real estate"],
   ["CHEP / Brambles", "Supply chain"],
   ["DIAGEO", "Global beverages"],
   ["Corteva Agriscience", "AgTech"],

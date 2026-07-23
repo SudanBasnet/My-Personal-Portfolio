@@ -5,6 +5,11 @@ import { itemVariants } from "../lib/motionVariants";
 
 const enterpriseClients = [
   {
+    name: "JLL",
+    sector: "Global commercial real estate",
+    work: "Enterprise desktop support within JLL's Sydney environment through Total IT Global, supporting users, endpoints, and workplace technology.",
+  },
+  {
     name: "CHEP / Brambles",
     sector: "Global supply chain",
     work: "100+ user desktop support, device replacement, secure decommissioning, server moves, Autopilot, Intune, VPN, ServiceNow, and handover documentation.",
@@ -42,7 +47,7 @@ const roles = [
     company: "Total IT Global",
     meta: "Enterprise Contractor / Sydney / 2025 - Present",
     bullets: [
-      "Delivered multi-client enterprise field support across globally recognised organisations.",
+      "Delivered multi-client enterprise field support across globally recognised organisations, including a current assignment with JLL.",
       "Handled endpoint provisioning, IMACD, secure decommissioning, OS deployment, and device lifecycle workflows.",
       "Supported Microsoft 365, Azure AD, Intune, Autopilot, Active Directory, VPN, printers, AV, and conferencing systems.",
       "Worked with ITSM processes, ServiceNow incidents, SLA expectations, documentation, and escalation to L3 teams.",

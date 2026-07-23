@@ -70,7 +70,7 @@ The content highlights experience across:
 - IMACD, hardware deployment, device lifecycle, secure decommissioning
 - Windows 10/11, macOS, VPN, printers, AV, and meeting room support
 
-Client environments represented include CHEP / Brambles, DIAGEO, Corteva Agriscience, PERRIGO, AMD, and Thomson Reuters.
+Client environments represented include JLL, CHEP / Brambles, DIAGEO, Corteva Agriscience, PERRIGO, AMD, and Thomson Reuters.
 
 ## Getting Started
 

@@ -303,8 +303,9 @@ export const ProfileSection = ({ portrait }) => (
       <p className="mt-6 max-w-[760px] leading-[1.8] text-[#5d5960]">
         I am a Desktop Support Engineer based in Sydney with enterprise
         contractor experience through Total IT Global and additional IT support
-        experience at Cloud Stream. I have supported CHEP / Brambles, DIAGEO,
-        Corteva Agriscience, PERRIGO, AMD and Thomson Reuters.
+        experience at Cloud Stream. I currently support JLL and have also
+        supported CHEP / Brambles, DIAGEO, Corteva Agriscience, PERRIGO, AMD and
+        Thomson Reuters.
       </p>
       <p className="mt-6 max-w-[760px] leading-[1.8] text-[#5d5960]">
         My work covers endpoint support, hardware refreshes, IMACD, Microsoft
