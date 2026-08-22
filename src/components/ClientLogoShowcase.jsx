@@ -67,7 +67,7 @@ export const ClientLogoShowcase = ({ immersive = false }) => {
       <div className="relative z-10 mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
           <p className="text-[0.66rem] font-extrabold uppercase tracking-[0.2em] text-[#d12f79]">
-            Enterprise client constellation
+            Enterprise organisation constellation
           </p>
           <h3
             id={immersive ? "ip-client-logos-title" : "client-logos-title"}
@@ -81,8 +81,8 @@ export const ClientLogoShowcase = ({ immersive = false }) => {
             immersive ? "text-[#625d65]" : "text-slate-600 dark:text-white/55"
           }`}
         >
-          Organisations supported through enterprise assignments, with JLL as
-          the current client.
+          Organisations supported through enterprise roles and assignments,
+          with Teva Pharmaceuticals as the current employer.
         </p>
       </div>
 
@@ -138,13 +138,19 @@ export const ClientLogoShowcase = ({ immersive = false }) => {
               className="flex min-h-16 items-center justify-center rounded-xl bg-white px-3 py-4"
               style={{ transform: "translateZ(28px)" }}
             >
-              <img
-                src={company.logo}
-                alt={`${company.name} logo`}
-                loading="lazy"
-                decoding="async"
-                className="max-h-12 w-full max-w-[150px] object-contain"
-              />
+              {company.logo ? (
+                <img
+                  src={company.logo}
+                  alt={`${company.name} logo`}
+                  loading="lazy"
+                  decoding="async"
+                  className="max-h-12 w-full max-w-[150px] object-contain"
+                />
+              ) : (
+                <span className="text-center font-editorial text-2xl font-semibold leading-none text-[#1354a3]">
+                  {company.name}
+                </span>
+              )}
             </div>
             <div
               className="mt-4"

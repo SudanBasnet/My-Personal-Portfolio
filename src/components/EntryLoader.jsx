@@ -1,11 +1,18 @@
-const EntryLoader = ({ immersive = false }) => (
-  <div
+import { motion, useReducedMotion } from "framer-motion";
+
+const EntryLoader = ({ immersive = false }) => {
+  const reduceMotion = useReducedMotion();
+
+  return (
+  <motion.div
     className={`fixed inset-0 z-[200] grid min-h-dvh place-items-center overflow-hidden px-6 text-center text-white ${
       immersive ? "bg-[#050505]" : "bg-[#09090c]"
     }`}
     role="status"
     aria-live="polite"
     aria-label={immersive ? "Entering the 3D world" : "Loading portfolio"}
+    exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 1.04, filter: "blur(6px)" }}
+    transition={{ duration: reduceMotion ? 0.15 : 0.55, ease: [0.22, 1, 0.36, 1] }}
   >
     <div
       className={`pointer-events-none absolute inset-0 ${
@@ -50,7 +57,8 @@ const EntryLoader = ({ immersive = false }) => (
         <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#80adff] motion-reduce:animate-none" />
       </div>
     </div>
-  </div>
-);
+  </motion.div>
+  );
+};
 
 export default EntryLoader;

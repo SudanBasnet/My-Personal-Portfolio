@@ -50,11 +50,10 @@ export const About = () => {
 
           <p className="mt-6 text-base leading-8 text-slate-600 dark:text-slate-300">
             I am a Desktop Support Engineer based in Sydney with enterprise
-            contractor experience through Total IT Global and additional IT
-            support experience at Cloud Stream. I currently support JLL and
-            have also supported globally recognised organisations including
-            CHEP / Brambles, DIAGEO, Corteva Agriscience, PERRIGO, AMD, and
-            Thomson Reuters.
+            experience and additional IT support experience at Cloud Stream. I
+            currently work at Teva Pharmaceuticals and have also supported
+            globally recognised organisations including JLL, CHEP / Brambles,
+            DIAGEO, Corteva Agriscience, PERRIGO, AMD, and Thomson Reuters.
           </p>
 
           <p className="mt-4 text-base leading-8 text-slate-600 dark:text-slate-300">

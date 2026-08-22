@@ -1,3 +1,4 @@
+import { motion, useReducedMotion } from "framer-motion";
 import { Reveal } from "./Motion";
 
 export const Title = ({
@@ -8,6 +9,7 @@ export const Title = ({
   chapter,
 }) => {
   const centered = align === "center";
+  const reduceMotion = useReducedMotion();
 
   return (
     <Reveal className={`mb-14 sm:mb-20 ${centered ? "text-center" : "text-left"}`}>
@@ -29,7 +31,14 @@ export const Title = ({
           {subtitle}
         </p>
       )}
-      <div className={`mt-6 h-[2px] w-32 bg-gradient-to-r from-[#ff62aa] via-[#4c65f7] to-[#ffb449] shadow-[0_0_20px_rgba(255,98,170,0.45)] ${centered ? "mx-auto" : ""}`}></div>
+      <motion.div
+        className={`mt-6 h-[2px] w-32 bg-gradient-to-r from-[#ff62aa] via-[#4c65f7] to-[#ffb449] shadow-[0_0_20px_rgba(255,98,170,0.45)] ${centered ? "mx-auto" : ""}`}
+        style={{ transformOrigin: centered ? "center" : "left" }}
+        initial={reduceMotion ? false : { scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ duration: 0.85, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+      ></motion.div>
     </Reveal>
   );
 };

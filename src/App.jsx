@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  AnimatePresence,
   motion,
   useReducedMotion,
   useScroll,
@@ -64,7 +65,7 @@ function App() {
 
   return (
     <div className={isDark ? "dark" : ""}>
-      {showEntryLoader && <EntryLoader />}
+      <AnimatePresence>{showEntryLoader && <EntryLoader />}</AnimatePresence>
       <div className="page-shell">
         <a
           href="#main-content"
@@ -97,6 +98,26 @@ function App() {
             onCommandOpen={() => setIsCommandOpen(true)}
           />
           <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
+          <motion.a
+            href="/kinetic"
+            className="group fixed bottom-5 left-4 z-[76] flex min-h-14 items-center gap-3 rounded-full border border-white/20 bg-[#09090c]/92 p-1.5 pr-5 text-white shadow-[0_16px_48px_rgba(0,0,0,0.38),0_0_34px_rgba(216,255,69,0.16)] backdrop-blur-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d8ff45] lg:bottom-24 lg:left-5"
+            whileHover={reduceMotion ? {} : { y: -4, scale: 1.025 }}
+            whileTap={reduceMotion ? {} : { scale: 0.97 }}
+            aria-label="Open the kinetic editorial portfolio experience"
+          >
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#d8ff45]/70 bg-[#d8ff45] font-editorial text-lg font-bold italic text-black transition-transform duration-500 group-hover:rotate-[-8deg]">
+              KI
+            </span>
+            <span className="text-left leading-none">
+              <span className="block text-[8px] font-black uppercase tracking-[0.22em] text-[#d8ff45]">
+                Enter
+              </span>
+              <span className="mt-1.5 block text-xs font-black uppercase tracking-[0.08em]">
+                Kinetic Index
+              </span>
+            </span>
+            <span className="text-sm text-white/45 transition group-hover:translate-x-1 group-hover:text-white" aria-hidden="true">→</span>
+          </motion.a>
           <motion.a
             href="/immersive"
             className="group fixed bottom-5 right-4 z-[76] flex min-h-14 items-center gap-3 rounded-full border border-white/20 bg-[#09090c]/92 p-1.5 pr-5 text-white shadow-[0_16px_48px_rgba(0,0,0,0.38),0_0_34px_rgba(178,92,250,0.22)] backdrop-blur-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff62aa] lg:bottom-24 lg:right-5"

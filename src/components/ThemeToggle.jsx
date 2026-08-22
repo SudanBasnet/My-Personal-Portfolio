@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 export const ThemeToggle = ({ isDark, onToggle }) => {
   const reduceMotion = useReducedMotion();
@@ -16,25 +16,50 @@ export const ThemeToggle = ({ isDark, onToggle }) => {
       title={`Switch to ${targetTheme} theme`}
     >
       <motion.span
-        className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${
+        className={`relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full ${
           isDark
             ? "bg-[#ffb449] text-[#17120a] shadow-[0_0_22px_rgba(255,180,73,0.4)]"
             : "bg-[#24242a] text-[#ffd28a] shadow-[0_0_20px_rgba(76,101,247,0.24)]"
         }`}
-        animate={reduceMotion ? {} : { rotate: isDark ? 0 : -18 }}
-        transition={{ duration: reduceMotion ? 0 : 0.35, ease: "easeOut" }}
         aria-hidden="true"
       >
-        {isDark ? (
-          <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <circle cx="12" cy="12" r="3.5" />
-            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42" />
-          </svg>
-        ) : (
-          <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M20.4 15.1A8.3 8.3 0 0 1 8.9 3.6 8.5 8.5 0 1 0 20.4 15.1Z" />
-          </svg>
-        )}
+        <AnimatePresence mode="wait" initial={false}>
+          {isDark ? (
+            <motion.svg
+              key="sun"
+              viewBox="0 0 24 24"
+              className="absolute inset-0 m-auto h-[18px] w-[18px]"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, rotate: -90, scale: 0.5 }}
+              animate={{ opacity: 1, rotate: 0, scale: 1 }}
+              exit={reduceMotion ? { opacity: 0 } : { opacity: 0, rotate: 90, scale: 0.5 }}
+              transition={{ duration: reduceMotion ? 0.15 : 0.32, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <circle cx="12" cy="12" r="3.5" />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42" />
+            </motion.svg>
+          ) : (
+            <motion.svg
+              key="moon"
+              viewBox="0 0 24 24"
+              className="absolute inset-0 m-auto h-[18px] w-[18px]"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, rotate: -90, scale: 0.5 }}
+              animate={{ opacity: 1, rotate: 0, scale: 1 }}
+              exit={reduceMotion ? { opacity: 0 } : { opacity: 0, rotate: 90, scale: 0.5 }}
+              transition={{ duration: reduceMotion ? 0.15 : 0.32, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <path d="M20.4 15.1A8.3 8.3 0 0 1 8.9 3.6 8.5 8.5 0 1 0 20.4 15.1Z" />
+            </motion.svg>
+          )}
+        </AnimatePresence>
       </motion.span>
 
       <span className="text-left leading-none">

@@ -18,44 +18,54 @@ export const InteractiveEffects = () => {
   useEffect(() => {
     if (reduceMotion || !window.matchMedia("(pointer: fine)").matches) return undefined;
 
+    let activeMagnetic = null;
+
+    const releaseMagnetic = () => {
+      if (!activeMagnetic) return;
+      activeMagnetic.style.transform = "translate3d(0, 0, 0)";
+      activeMagnetic = null;
+    };
+
     const moveCursor = (event) => {
       setCursor((current) => ({ ...current, x: event.clientX, y: event.clientY }));
-    };
-    const activate = () => setCursor((current) => ({ ...current, active: true }));
-    const deactivate = () => setCursor((current) => ({ ...current, active: false }));
-    const magneticElements = [...document.querySelectorAll(".magnetic")];
 
-    const cleanups = magneticElements.map((element) => {
-      const move = (event) => {
-        const rect = element.getBoundingClientRect();
+      const magneticTarget = event.target.closest?.(".magnetic");
+      if (magneticTarget) {
+        const rect = magneticTarget.getBoundingClientRect();
         const x = (event.clientX - rect.left - rect.width / 2) * 0.16;
         const y = (event.clientY - rect.top - rect.height / 2) * 0.16;
-        element.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-      };
-      const leave = () => {
-        element.style.transform = "translate3d(0, 0, 0)";
-      };
-      element.addEventListener("pointermove", move);
-      element.addEventListener("pointerleave", leave);
-      return () => {
-        element.removeEventListener("pointermove", move);
-        element.removeEventListener("pointerleave", leave);
-      };
-    });
+        magneticTarget.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        activeMagnetic = magneticTarget;
+      } else if (activeMagnetic) {
+        releaseMagnetic();
+      }
+    };
 
+    const handlePointerOver = (event) => {
+      if (event.target.closest?.("a, button")) {
+        setCursor((current) => ({ ...current, active: true }));
+      }
+    };
+    const handlePointerOut = (event) => {
+      const leavingInteractive = event.target.closest?.("a, button");
+      const enteringInteractive = event.relatedTarget?.closest?.("a, button");
+      if (leavingInteractive && !enteringInteractive) {
+        setCursor((current) => ({ ...current, active: false }));
+      }
+    };
+
+    // Delegated listeners (rather than binding per-element on mount) so
+    // elements that mount later, e.g. the command palette or mobile nav,
+    // are still magnetic/cursor-aware without a re-scan.
     window.addEventListener("pointermove", moveCursor);
-    document.querySelectorAll("a, button").forEach((element) => {
-      element.addEventListener("pointerenter", activate);
-      element.addEventListener("pointerleave", deactivate);
-    });
+    document.addEventListener("pointerover", handlePointerOver);
+    document.addEventListener("pointerout", handlePointerOut);
 
     return () => {
       window.removeEventListener("pointermove", moveCursor);
-      document.querySelectorAll("a, button").forEach((element) => {
-        element.removeEventListener("pointerenter", activate);
-        element.removeEventListener("pointerleave", deactivate);
-      });
-      cleanups.forEach((cleanup) => cleanup());
+      document.removeEventListener("pointerover", handlePointerOver);
+      document.removeEventListener("pointerout", handlePointerOut);
+      releaseMagnetic();
     };
   }, [reduceMotion]);
 

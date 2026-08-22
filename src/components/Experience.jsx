@@ -4,11 +4,16 @@ import { ParallaxSection, Reveal, Stagger } from "./Motion";
 import { itemVariants } from "../lib/motionVariants";
 import { ClientLogoShowcase } from "./ClientLogoShowcase";
 
-const enterpriseClients = [
+const enterpriseOrganisations = [
+  {
+    name: "Teva Pharmaceuticals",
+    sector: "Global pharmaceuticals",
+    work: "Current enterprise desktop support role at Teva Pharmaceuticals.",
+  },
   {
     name: "JLL",
     sector: "Global commercial real estate",
-    work: "Enterprise desktop support within JLL's Sydney environment through Total IT Global, supporting users, endpoints, and workplace technology.",
+    work: "Enterprise desktop support within JLL's Sydney environment, supporting users, endpoints, and workplace technology.",
   },
   {
     name: "CHEP / Brambles",
@@ -45,10 +50,19 @@ const enterpriseClients = [
 const roles = [
   {
     title: "Desktop Support Engineer",
-    company: "Total IT Global",
-    meta: "Enterprise Contractor / Sydney / 2025 - Present",
+    company: "Teva Pharmaceuticals",
+    meta: "Sydney / 2026 - Present",
     bullets: [
-      "Delivered multi-client enterprise field support across globally recognised organisations, including a current assignment with JLL.",
+      "Currently working at Teva Pharmaceuticals in an enterprise desktop support role.",
+      "Brings hands-on enterprise experience supporting users, endpoints, and workplace technology across global organisations.",
+    ],
+  },
+  {
+    title: "Desktop Support Engineer",
+    company: "Enterprise Companies",
+    meta: "Sydney / 2025 - 2026",
+    bullets: [
+      "Delivered multi-client enterprise field support across globally recognised organisations, including JLL.",
       "Handled endpoint provisioning, IMACD, secure decommissioning, OS deployment, and device lifecycle workflows.",
       "Supported Microsoft 365, Azure AD, Intune, Autopilot, Active Directory, VPN, printers, AV, and conferencing systems.",
       "Worked with ITSM processes, ServiceNow incidents, SLA expectations, documentation, and escalation to L3 teams.",
@@ -136,12 +150,12 @@ export const Experience = () => {
 
         <div className="space-y-6">
           <Reveal className="rounded-[2rem] border border-black/15 bg-black p-7 text-white dark:border-white/15">
-            <p className="chip mb-5 w-fit">Enterprise Clients</p>
+            <p className="chip mb-5 w-fit">Enterprise Organisations</p>
             <h3 className="font-editorial text-4xl font-light leading-none text-white">
               Multi-site support for global teams and high-pressure environments.
             </h3>
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
-              {enterpriseClients.map((client) => (
+              {enterpriseOrganisations.map((client) => (
                 <motion.article
                   key={client.name}
                   whileHover={{ y: -4, borderColor: "rgba(255, 98, 170, 0.65)" }}

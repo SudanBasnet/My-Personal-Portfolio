@@ -171,7 +171,7 @@ export const ExperienceSection = ({ roles, clients }) => (
     </div>
     <div
       className="mt-[clamp(4rem,7vw,7rem)] grid grid-cols-3 border-l border-t border-black/20 max-[900px]:grid-cols-2 max-[620px]:grid-cols-1"
-      aria-label="Enterprise clients"
+      aria-label="Enterprise organisations"
     >
       {clients.map(([name, sector]) => (
         <article
@@ -307,10 +307,10 @@ export const ProfileSection = ({ portrait }) => (
       </h2>
       <p className="mt-6 max-w-[760px] leading-[1.8] text-[#5d5960]">
         I am a Desktop Support Engineer based in Sydney with enterprise
-        contractor experience through Total IT Global and additional IT support
-        experience at Cloud Stream. I currently support JLL and have also
-        supported CHEP / Brambles, DIAGEO, Corteva Agriscience, PERRIGO, AMD and
-        Thomson Reuters.
+        experience and additional IT support experience at Cloud Stream. I
+        currently work at Teva Pharmaceuticals and have also supported JLL,
+        CHEP / Brambles, DIAGEO, Corteva Agriscience, PERRIGO, AMD and Thomson
+        Reuters.
       </p>
       <p className="mt-6 max-w-[760px] leading-[1.8] text-[#5d5960]">
         My work covers endpoint support, hardware refreshes, IMACD, Microsoft

@@ -1,5 +1,11 @@
 import { useEffect, useRef } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { itemVariants } from "../lib/motionVariants";
+
+const listVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.045, delayChildren: 0.08 } },
+};
 
 const destinations = [
   ["Home", "A quick introduction", "#hero", "fa-house"],
@@ -13,6 +19,7 @@ const destinations = [
 export const CommandPalette = ({ isOpen, onClose, onThemeToggle }) => {
   const dialogRef = useRef(null);
   const previousFocusRef = useRef(null);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -95,11 +102,17 @@ export const CommandPalette = ({ isOpen, onClose, onThemeToggle }) => {
               <kbd className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-bold text-slate-500 dark:border-white/10">ESC</kbd>
             </div>
 
-            <div className="grid gap-1 p-3 sm:grid-cols-2">
+            <motion.div
+              className="grid gap-1 p-3 sm:grid-cols-2"
+              initial={reduceMotion ? false : "hidden"}
+              animate="visible"
+              variants={listVariants}
+            >
               {destinations.map(([label, detail, href, icon]) => (
-                <button
+                <motion.button
                   key={href}
                   type="button"
+                  variants={itemVariants}
                   onClick={() => visit(href)}
                   className="group flex items-center gap-3 rounded-2xl p-3 text-left transition hover:bg-[#ff62aa]/10 focus-visible:bg-[#ff62aa]/10 focus-visible:outline-none"
                 >
@@ -110,9 +123,9 @@ export const CommandPalette = ({ isOpen, onClose, onThemeToggle }) => {
                     <span className="block text-sm font-black text-slate-900 dark:text-white">{label}</span>
                     <span className="block text-xs font-medium text-slate-500 dark:text-slate-400">{detail}</span>
                   </span>
-                </button>
+                </motion.button>
               ))}
-            </div>
+            </motion.div>
 
             <div className="flex items-center justify-between border-t border-slate-200 px-5 py-3 dark:border-white/10">
               <button type="button" onClick={onThemeToggle} className="text-xs font-black text-slate-600 transition hover:text-[#c72f76] dark:text-slate-300 dark:hover:text-[#ff8fc2]">

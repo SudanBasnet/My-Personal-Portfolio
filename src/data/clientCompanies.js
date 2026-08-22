@@ -4,14 +4,20 @@ import cortevaLogo from "../assets/company-logos/corteva.svg";
 import diageoLogo from "../assets/company-logos/diageo.svg";
 import jllLogo from "../assets/company-logos/jll.svg";
 import perrigoLogo from "../assets/company-logos/perrigo.svg";
+import tevaLogo from "../assets/company-logos/teva.svg";
 import thomsonReutersLogo from "../assets/company-logos/thomson-reuters.svg";
 
 export const clientCompanies = [
   {
+    name: "Teva Pharmaceuticals",
+    sector: "Global pharmaceuticals",
+    logo: tevaLogo,
+    current: true,
+  },
+  {
     name: "JLL",
     sector: "Commercial real estate",
     logo: jllLogo,
-    current: true,
   },
   {
     name: "CHEP / Brambles",

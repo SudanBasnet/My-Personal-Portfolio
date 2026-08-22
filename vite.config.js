@@ -13,6 +13,9 @@ export default defineConfig({
         immersive: fileURLToPath(
           new URL("./immersive/index.html", import.meta.url),
         ),
+        kinetic: fileURLToPath(
+          new URL("./kinetic/index.html", import.meta.url),
+        ),
       },
     },
   },

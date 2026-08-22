@@ -73,9 +73,11 @@ export const Card = ({
             src={screenshot.src}
             alt={screenshot.alt}
             style={{ y: imageY, scale: 1.08 }}
+            whileHover={reduceMotion ? undefined : { scale: 1.15 }}
+            transition={{ type: "spring", stiffness: 200, damping: 24 }}
             loading="lazy"
             decoding="async"
-            className={`absolute inset-0 h-[112%] w-full object-cover transition-[transform,opacity] duration-700 motion-reduce:transition-none ${
+            className={`absolute inset-0 h-[112%] w-full object-cover transition-[opacity] duration-700 motion-reduce:transition-none ${
               projectScreenshots.length > 1 && screenshotIndex === 0
                 ? "opacity-100 group-hover:opacity-0 group-focus-within:opacity-0"
                 : screenshotIndex > 0
@@ -84,7 +86,7 @@ export const Card = ({
             }`}
           />
         ))}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent opacity-80"></div>
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent opacity-80"></div>
         <div className="absolute left-5 top-5 flex items-center gap-2">
           <span className="rounded-full border border-white/20 bg-slate-950/60 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-white backdrop-blur-xl">
             {String(index + 1).padStart(2, "0")}

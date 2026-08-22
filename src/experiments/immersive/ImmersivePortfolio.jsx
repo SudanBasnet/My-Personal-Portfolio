@@ -107,10 +107,19 @@ const skillGroups = [
 const roles = [
   {
     title: "Desktop Support Engineer",
-    company: "Total IT Global",
-    meta: "Enterprise Contractor / Sydney / 2025 - Present",
+    company: "Teva Pharmaceuticals",
+    meta: "Sydney / 2026 - Present",
     bullets: [
-      "Multi-client enterprise field support across globally recognised organisations, including a current assignment with JLL.",
+      "Currently working at Teva Pharmaceuticals in an enterprise desktop support role.",
+      "Hands-on enterprise experience supporting users, endpoints and workplace technology across global organisations.",
+    ],
+  },
+  {
+    title: "Desktop Support Engineer",
+    company: "Enterprise Companies",
+    meta: "Sydney / 2025 - 2026",
+    bullets: [
+      "Multi-client enterprise field support across globally recognised organisations, including JLL.",
       "Endpoint provisioning, IMACD, secure decommissioning, OS deployment and lifecycle workflows.",
       "Microsoft 365, Azure AD, Intune, Autopilot, Active Directory, VPN, printers, AV and conferencing support.",
       "ServiceNow incidents, SLA expectations, documentation and escalation to L3 teams.",
@@ -130,6 +139,7 @@ const roles = [
 ];
 
 const clients = [
+  ["Teva Pharmaceuticals", "Global pharmaceuticals"],
   ["JLL", "Commercial real estate"],
   ["CHEP / Brambles", "Supply chain"],
   ["DIAGEO", "Global beverages"],
