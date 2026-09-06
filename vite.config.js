@@ -16,6 +16,9 @@ export default defineConfig({
         kinetic: fileURLToPath(
           new URL("./kinetic/index.html", import.meta.url),
         ),
+        adminDashboard: fileURLToPath(
+          new URL("./login/admin-dashboard/index.html", import.meta.url),
+        ),
       },
     },
   },
