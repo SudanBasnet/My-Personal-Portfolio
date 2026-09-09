@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "./admin-dashboard.css";
 
 const STORAGE_KEY = "portfolio-admin-demo-content";
@@ -110,15 +110,29 @@ const formatDate = (date) =>
     year: "numeric",
   }).format(new Date(date));
 
+const formatRelativeDate = (date) => {
+  const elapsedDays = Math.floor(
+    (Date.now() - new Date(date).getTime()) / (1000 * 60 * 60 * 24),
+  );
+
+  if (elapsedDays <= 0) return "Today";
+  if (elapsedDays === 1) return "Yesterday";
+  if (elapsedDays < 7) return `${elapsedDays} days ago`;
+  return formatDate(date);
+};
+
 const AdminDashboard = () => {
   const [items, setItems] = useState(loadContent);
   const [query, setQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [sortBy, setSortBy] = useState("recent");
+  const [activeSection, setActiveSection] = useState("overview");
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [notice, setNotice] = useState("Demo data is saved in this browser.");
   const [selectedTheme, setSelectedTheme] = useState(loadSelectedTheme);
+  const searchInputRef = useRef(null);
 
   useEffect(() => {
     try {
@@ -128,10 +142,51 @@ const AdminDashboard = () => {
     }
   }, [items]);
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape" && isEditorOpen) {
+        setIsEditorOpen(false);
+        setEditingId(null);
+        setForm(EMPTY_FORM);
+      }
+
+      if (
+        event.key === "/" &&
+        !isEditorOpen &&
+        !["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement?.tagName)
+      ) {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isEditorOpen]);
+
+  useEffect(() => {
+    const sections = ["overview", "content-library", "theme-options"]
+      .map((id) => document.getElementById(id))
+      .filter(Boolean);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (visible) setActiveSection(visible.target.id);
+      },
+      { rootMargin: "-15% 0px -65%", threshold: [0, 0.25, 0.6] },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
   const filteredItems = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
-    return items.filter((item) => {
+    const matchingItems = items.filter((item) => {
       const matchesFilter =
         activeFilter === "All" || item.status === activeFilter;
       const matchesQuery =
@@ -142,7 +197,13 @@ const AdminDashboard = () => {
 
       return matchesFilter && matchesQuery;
     });
-  }, [activeFilter, items, query]);
+
+    return matchingItems.sort((first, second) => {
+      if (sortBy === "title") return first.title.localeCompare(second.title);
+      if (sortBy === "status") return first.status.localeCompare(second.status);
+      return new Date(second.updatedAt) - new Date(first.updatedAt);
+    });
+  }, [activeFilter, items, query, sortBy]);
 
   const stats = useMemo(
     () => ({
@@ -152,6 +213,31 @@ const AdminDashboard = () => {
       categories: new Set(items.map((item) => item.category)).size,
     }),
     [items],
+  );
+
+  const dashboardInsights = useMemo(() => {
+    const recentItems = [...items]
+      .sort((first, second) => new Date(second.updatedAt) - new Date(first.updatedAt))
+      .slice(0, 3);
+    const publishedPercent = items.length
+      ? Math.round((stats.published / items.length) * 100)
+      : 0;
+    const categoryCounts = ["Project", "Article", "Note"].map((category) => ({
+      category,
+      count: items.filter((item) => item.category === category).length,
+    }));
+
+    return { recentItems, publishedPercent, categoryCounts };
+  }, [items, stats.published]);
+
+  const todayLabel = useMemo(
+    () =>
+      new Intl.DateTimeFormat("en-AU", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+      }).format(new Date()),
+    [],
   );
 
   const openCreate = () => {
@@ -222,6 +308,19 @@ const AdminDashboard = () => {
     setNotice(`“${item.title}” was deleted.`);
   };
 
+  const duplicateItem = (item) => {
+    const copy = {
+      ...item,
+      id: createId(),
+      title: `${item.title} copy`,
+      status: "Draft",
+      updatedAt: new Date().toISOString(),
+    };
+
+    setItems((current) => [copy, ...current]);
+    setNotice(`A draft copy of “${item.title}” was created.`);
+  };
+
   const resetDemo = () => {
     const shouldReset = window.confirm(
       "Reset all local changes and restore the starter records?",
@@ -231,6 +330,7 @@ const AdminDashboard = () => {
     setItems(DEMO_CONTENT);
     setQuery("");
     setActiveFilter("All");
+    setSortBy("recent");
     setNotice("Starter records were restored.");
   };
 
@@ -245,6 +345,7 @@ const AdminDashboard = () => {
   };
 
   const scrollToSection = (sectionId) => {
+    setActiveSection(sectionId);
     document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -260,13 +361,25 @@ const AdminDashboard = () => {
         </div>
 
         <nav className="admin-nav">
-          <button className="is-active" type="button">
+          <button
+            className={activeSection === "overview" ? "is-active" : ""}
+            type="button"
+            onClick={() => scrollToSection("overview")}
+          >
             <span aria-hidden="true">⌂</span> Overview
           </button>
-          <button type="button" onClick={() => setActiveFilter("All")}>
+          <button
+            className={activeSection === "content-library" ? "is-active" : ""}
+            type="button"
+            onClick={() => scrollToSection("content-library")}
+          >
             <span aria-hidden="true">▦</span> Content
           </button>
-          <button type="button" onClick={() => scrollToSection("theme-options")}>
+          <button
+            className={activeSection === "theme-options" ? "is-active" : ""}
+            type="button"
+            onClick={() => scrollToSection("theme-options")}
+          >
             <span aria-hidden="true">◉</span> Themes
           </button>
           <button type="button" disabled>
@@ -284,22 +397,25 @@ const AdminDashboard = () => {
         </div>
       </aside>
 
-      <main className="admin-main">
+      <main className="admin-main" id="overview">
         <header className="admin-topbar">
           <div>
             <p className="admin-eyebrow">Personal workspace</p>
             <h1>Good day, Sudan.</h1>
           </div>
           <div className="admin-topbar-actions">
+            <span className="admin-date-chip">{todayLabel}</span>
             <label className="admin-search">
               <span aria-hidden="true">⌕</span>
               <span className="sr-only">Search content</span>
               <input
+                ref={searchInputRef}
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search content"
               />
+              <kbd>/</kbd>
             </label>
             <span className="admin-avatar" aria-label="Sudan Basnet">
               SB
@@ -309,15 +425,20 @@ const AdminDashboard = () => {
 
         <section className="admin-hero" aria-labelledby="dashboard-title">
           <div>
-            <span className="admin-kicker">Workspace / Overview</span>
+            <span className="admin-kicker"><i /> Workspace / Overview</span>
             <h2 id="dashboard-title">Shape what the world sees.</h2>
             <p>
-              Create, review, and refine portfolio content from one calm place.
+              Your private studio for publishing work, refining stories, and keeping every portfolio experience current.
             </p>
           </div>
-          <button className="admin-primary-button" type="button" onClick={openCreate}>
-            <span aria-hidden="true">＋</span> New content
-          </button>
+          <div className="admin-hero-actions">
+            <button className="admin-primary-button" type="button" onClick={openCreate}>
+              <span aria-hidden="true">＋</span> New content
+            </button>
+            <a className="admin-ghost-link" href="/" target="_blank" rel="noreferrer">
+              View portfolio <span aria-hidden="true">↗</span>
+            </a>
+          </div>
           <span className="admin-hero-orb admin-hero-orb-one" aria-hidden="true" />
           <span className="admin-hero-orb admin-hero-orb-two" aria-hidden="true" />
         </section>
@@ -326,23 +447,170 @@ const AdminDashboard = () => {
           <article>
             <span className="stat-icon stat-icon-mint" aria-hidden="true">▦</span>
             <div><strong>{stats.total}</strong><span>Total entries</span></div>
-            <small>Local records</small>
+            <small><b>{filteredItems.length}</b> in current view</small>
           </article>
           <article>
             <span className="stat-icon stat-icon-violet" aria-hidden="true">✓</span>
             <div><strong>{stats.published}</strong><span>Published</span></div>
-            <small>Visible status</small>
+            <small><b>{dashboardInsights.publishedPercent}%</b> of your library</small>
           </article>
           <article>
             <span className="stat-icon stat-icon-amber" aria-hidden="true">✎</span>
             <div><strong>{stats.drafts}</strong><span>Drafts</span></div>
-            <small>In progress</small>
+            <small><b>{stats.drafts ? "Needs review" : "All clear"}</b></small>
           </article>
           <article>
             <span className="stat-icon stat-icon-blue" aria-hidden="true">◫</span>
             <div><strong>{stats.categories}</strong><span>Categories</span></div>
-            <small>Content types</small>
+            <small><b>Projects · Writing · Notes</b></small>
           </article>
+        </section>
+
+        <section className="admin-insights" aria-label="Workspace insights">
+          <article className="admin-health-card">
+            <div className="admin-insight-heading">
+              <div>
+                <p className="admin-eyebrow">Publishing health</p>
+                <h2>Content readiness</h2>
+              </div>
+              <span className="admin-health-ring" style={{ "--health": `${dashboardInsights.publishedPercent * 3.6}deg` }}>
+                <strong>{dashboardInsights.publishedPercent}%</strong>
+              </span>
+            </div>
+            <p>Published entries are ready for your public portfolio. Drafts stay private in this local workspace.</p>
+            <div className="admin-category-bars">
+              {dashboardInsights.categoryCounts.map(({ category, count }) => (
+                <div key={category}>
+                  <span><b>{category}</b><small>{count}</small></span>
+                  <i><em style={{ width: `${items.length ? (count / items.length) * 100 : 0}%` }} /></i>
+                </div>
+              ))}
+            </div>
+          </article>
+
+          <article className="admin-activity-card">
+            <div className="admin-insight-heading">
+              <div>
+                <p className="admin-eyebrow">Recent activity</p>
+                <h2>Latest updates</h2>
+              </div>
+              <button type="button" onClick={() => scrollToSection("content-library")}>View all</button>
+            </div>
+            <div className="admin-activity-list">
+              {dashboardInsights.recentItems.map((item) => (
+                <button type="button" key={item.id} onClick={() => openEdit(item)}>
+                  <span className={`activity-mark category-${categoryTone[item.category]}`}>{item.title.charAt(0)}</span>
+                  <span><strong>{item.title}</strong><small>{item.category} · {item.status}</small></span>
+                  <time dateTime={item.updatedAt}>{formatRelativeDate(item.updatedAt)}</time>
+                </button>
+              ))}
+              {dashboardInsights.recentItems.length === 0 && (
+                <p className="admin-activity-empty">Create your first entry to start the activity feed.</p>
+              )}
+            </div>
+          </article>
+        </section>
+
+        <section className="admin-content-panel" id="content-library" aria-labelledby="content-heading">
+          <div className="admin-panel-heading">
+            <div>
+              <p className="admin-eyebrow">Content library</p>
+              <h2 id="content-heading">Manage content</h2>
+            </div>
+            <button className="admin-reset-button" type="button" onClick={resetDemo}>
+              Reset demo
+            </button>
+          </div>
+
+          <div className="admin-toolbar">
+            <div className="admin-filters" aria-label="Filter by status">
+              {["All", "Published", "Draft", "Archived"].map((filter) => (
+                <button
+                  className={activeFilter === filter ? "is-active" : ""}
+                  key={filter}
+                  type="button"
+                  onClick={() => setActiveFilter(filter)}
+                >
+                  {filter}
+                  <span>
+                    {filter === "All"
+                      ? items.length
+                      : items.filter((item) => item.status === filter).length}
+                  </span>
+                </button>
+              ))}
+            </div>
+            <div className="admin-toolbar-meta">
+              <p role="status">{notice}</p>
+              <label>
+                <span className="sr-only">Sort content</span>
+                <select value={sortBy} onChange={(event) => setSortBy(event.target.value)}>
+                  <option value="recent">Recently updated</option>
+                  <option value="title">Title A–Z</option>
+                  <option value="status">Status</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div className="admin-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Content</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Updated</th>
+                  <th><span className="sr-only">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredItems.map((item) => (
+                  <tr key={item.id}>
+                    <td>
+                      <strong>{item.title}</strong>
+                      <span>{item.summary}</span>
+                    </td>
+                    <td>
+                      <span className={`category-tag category-${categoryTone[item.category]}`}>
+                        {item.category}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`status-tag status-${item.status.toLowerCase()}`}>
+                        <i /> {item.status}
+                      </span>
+                    </td>
+                    <td><time dateTime={item.updatedAt}>{formatDate(item.updatedAt)}</time></td>
+                    <td>
+                      <div className="admin-row-actions">
+                        <button type="button" onClick={() => openEdit(item)} aria-label={`Edit ${item.title}`}>
+                          Edit
+                        </button>
+                        <button type="button" onClick={() => duplicateItem(item)} aria-label={`Duplicate ${item.title}`}>
+                          Duplicate
+                        </button>
+                        <button className="is-danger" type="button" onClick={() => handleDelete(item)} aria-label={`Delete ${item.title}`}>
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {filteredItems.length === 0 && (
+              <div className="admin-empty-state">
+                <span aria-hidden="true">⌕</span>
+                <h3>No content found</h3>
+                <p>Try another search or status filter.</p>
+                <button type="button" onClick={() => { setQuery(""); setActiveFilter("All"); }}>
+                  Clear filters
+                </button>
+              </div>
+            )}
+          </div>
         </section>
 
         <section
@@ -408,90 +676,6 @@ const AdminDashboard = () => {
             <span aria-hidden="true">ⓘ</span>
             Your dashboard theme is active now and saved in this browser. It does not change the public portfolio theme.
           </p>
-        </section>
-
-        <section className="admin-content-panel" aria-labelledby="content-heading">
-          <div className="admin-panel-heading">
-            <div>
-              <p className="admin-eyebrow">Content library</p>
-              <h2 id="content-heading">Manage content</h2>
-            </div>
-            <button className="admin-reset-button" type="button" onClick={resetDemo}>
-              Reset demo
-            </button>
-          </div>
-
-          <div className="admin-toolbar">
-            <div className="admin-filters" aria-label="Filter by status">
-              {["All", "Published", "Draft", "Archived"].map((filter) => (
-                <button
-                  className={activeFilter === filter ? "is-active" : ""}
-                  key={filter}
-                  type="button"
-                  onClick={() => setActiveFilter(filter)}
-                >
-                  {filter}
-                </button>
-              ))}
-            </div>
-            <p role="status">{notice}</p>
-          </div>
-
-          <div className="admin-table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Content</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th>Updated</th>
-                  <th><span className="sr-only">Actions</span></th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredItems.map((item) => (
-                  <tr key={item.id}>
-                    <td>
-                      <strong>{item.title}</strong>
-                      <span>{item.summary}</span>
-                    </td>
-                    <td>
-                      <span className={`category-tag category-${categoryTone[item.category]}`}>
-                        {item.category}
-                      </span>
-                    </td>
-                    <td>
-                      <span className={`status-tag status-${item.status.toLowerCase()}`}>
-                        <i /> {item.status}
-                      </span>
-                    </td>
-                    <td><time dateTime={item.updatedAt}>{formatDate(item.updatedAt)}</time></td>
-                    <td>
-                      <div className="admin-row-actions">
-                        <button type="button" onClick={() => openEdit(item)} aria-label={`Edit ${item.title}`}>
-                          Edit
-                        </button>
-                        <button className="is-danger" type="button" onClick={() => handleDelete(item)} aria-label={`Delete ${item.title}`}>
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            {filteredItems.length === 0 && (
-              <div className="admin-empty-state">
-                <span aria-hidden="true">⌕</span>
-                <h3>No content found</h3>
-                <p>Try another search or status filter.</p>
-                <button type="button" onClick={() => { setQuery(""); setActiveFilter("All"); }}>
-                  Clear filters
-                </button>
-              </div>
-            )}
-          </div>
         </section>
       </main>
 

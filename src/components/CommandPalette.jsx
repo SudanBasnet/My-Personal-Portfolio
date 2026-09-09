@@ -10,7 +10,12 @@ const listVariants = {
 const destinations = [
   ["Home", "A quick introduction", "#hero", "fa-house"],
   ["Skills", "Tools I use every day", "#skills", "fa-screwdriver-wrench"],
-  ["Experience", "Enterprise support background", "#experience", "fa-briefcase"],
+  [
+    "Experience",
+    "Enterprise support background",
+    "#experience",
+    "fa-briefcase",
+  ],
   ["Projects", "Selected development work", "#projects", "fa-code"],
   ["About", "How I approach the work", "#about", "fa-user"],
   ["Contact", "Start a conversation", "#contacts", "fa-paper-plane"],
@@ -25,7 +30,9 @@ export const CommandPalette = ({ isOpen, onClose, onThemeToggle }) => {
     const handleKeyDown = (event) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
-        isOpen ? onClose() : document.dispatchEvent(new CustomEvent("open-command-menu"));
+        isOpen
+          ? onClose()
+          : document.dispatchEvent(new CustomEvent("open-command-menu"));
       }
       if (event.key === "Escape") onClose();
     };
@@ -43,7 +50,11 @@ export const CommandPalette = ({ isOpen, onClose, onThemeToggle }) => {
     }, 50);
     const trapFocus = (event) => {
       if (event.key !== "Tab" || !dialogRef.current) return;
-      const focusable = [...dialogRef.current.querySelectorAll("button, a[href], [tabindex]:not([tabindex='-1'])")];
+      const focusable = [
+        ...dialogRef.current.querySelectorAll(
+          "button, a[href], [tabindex]:not([tabindex='-1'])",
+        ),
+      ];
       if (!focusable.length) return;
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
@@ -77,7 +88,9 @@ export const CommandPalette = ({ isOpen, onClose, onThemeToggle }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onMouseDown={(event) => event.target === event.currentTarget && onClose()}
+          onMouseDown={(event) =>
+            event.target === event.currentTarget && onClose()
+          }
         >
           <motion.div
             ref={dialogRef}
@@ -92,14 +105,20 @@ export const CommandPalette = ({ isOpen, onClose, onThemeToggle }) => {
             className="max-h-[88svh] w-full max-w-xl overflow-y-auto overscroll-contain rounded-[2rem] border border-white/15 bg-white/95 shadow-2xl outline-none dark:bg-slate-950/95 sm:max-h-[76vh]"
           >
             <div className="flex items-center gap-3 border-b border-slate-200 px-5 py-4 dark:border-white/10">
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-[#ff62aa]/15 text-[#c72f76] dark:text-[#ff8fc2]">
+              <span className="grid h-10 w-10 place-items-center rounded-full bg-[#ff62aa]/15 text-[#c72f76] dark:text-[#ff8fc2]">
                 <i className="fa-solid fa-compass"></i>
               </span>
               <div className="flex-1">
-                <p className="text-sm font-black text-slate-950 dark:text-white">Explore the portfolio</p>
-                <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Choose where you want to go</p>
+                <p className="text-sm font-black text-slate-950 dark:text-white">
+                  Explore the portfolio
+                </p>
+                <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                  Choose where you want to go
+                </p>
               </div>
-              <kbd className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-bold text-slate-500 dark:border-white/10">ESC</kbd>
+              <kbd className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-bold text-slate-500 dark:border-white/10">
+                ESC
+              </kbd>
             </div>
 
             <motion.div
@@ -120,18 +139,29 @@ export const CommandPalette = ({ isOpen, onClose, onThemeToggle }) => {
                     <i className={`fa-solid ${icon}`}></i>
                   </span>
                   <span>
-                    <span className="block text-sm font-black text-slate-900 dark:text-white">{label}</span>
-                    <span className="block text-xs font-medium text-slate-500 dark:text-slate-400">{detail}</span>
+                    <span className="block text-sm font-black text-slate-900 dark:text-white">
+                      {label}
+                    </span>
+                    <span className="block text-xs font-medium text-slate-500 dark:text-slate-400">
+                      {detail}
+                    </span>
                   </span>
                 </motion.button>
               ))}
             </motion.div>
 
             <div className="flex items-center justify-between border-t border-slate-200 px-5 py-3 dark:border-white/10">
-              <button type="button" onClick={onThemeToggle} className="text-xs font-black text-slate-600 transition hover:text-[#c72f76] dark:text-slate-300 dark:hover:text-[#ff8fc2]">
-                <i className="fa-solid fa-circle-half-stroke mr-2"></i>Toggle theme
+              <button
+                type="button"
+                onClick={onThemeToggle}
+                className="text-xs font-black text-slate-600 transition hover:text-[#c72f76] dark:text-slate-300 dark:hover:text-[#ff8fc2]"
+              >
+                <i className="fa-solid fa-circle-half-stroke mr-2"></i>Toggle
+                theme
               </button>
-              <span className="text-xs font-semibold text-slate-400">⌘/Ctrl + K</span>
+              <span className="text-xs font-semibold text-slate-400">
+                ⌘/Ctrl + K
+              </span>
             </div>
           </motion.div>
         </motion.div>
