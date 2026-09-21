@@ -3,6 +3,9 @@ import "./admin-dashboard.css";
 
 const STORAGE_KEY = "portfolio-admin-demo-content";
 const THEME_STORAGE_KEY = "portfolio-admin-demo-theme";
+const SESSION_STORAGE_KEY = "portfolio-admin-demo-session";
+const DEMO_EMAIL = "admin@demo.local";
+const DEMO_PASSWORD = "portfolio";
 
 const SITE_THEMES = [
   {
@@ -121,7 +124,7 @@ const formatRelativeDate = (date) => {
   return formatDate(date);
 };
 
-const AdminDashboard = () => {
+const AdminDashboard = ({ onSignOut }) => {
   const [items, setItems] = useState(loadContent);
   const [query, setQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
@@ -417,6 +420,9 @@ const AdminDashboard = () => {
               />
               <kbd>/</kbd>
             </label>
+            <button className="admin-signout-button" type="button" onClick={onSignOut}>
+              Sign out
+            </button>
             <span className="admin-avatar" aria-label="Sudan Basnet">
               SB
             </span>
@@ -761,4 +767,185 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+const loadDemoSession = () => {
+  try {
+    return window.sessionStorage.getItem(SESSION_STORAGE_KEY) === "active";
+  } catch {
+    return false;
+  }
+};
+
+const DashboardLogin = ({ onLogin }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleLogin = (event) => {
+    event.preventDefault();
+
+    if (email.trim().toLowerCase() !== DEMO_EMAIL || password !== DEMO_PASSWORD) {
+      setError("Those details do not match the demo access shown below.");
+      return;
+    }
+
+    setError("");
+    onLogin();
+  };
+
+  return (
+    <main className="admin-login-page">
+      <span className="admin-login-glow admin-login-glow-one" aria-hidden="true" />
+      <span className="admin-login-glow admin-login-glow-two" aria-hidden="true" />
+
+      <div className="admin-login-shell">
+        <section className="admin-login-story" aria-labelledby="admin-login-title">
+          <a className="admin-login-brand" href="/" aria-label="Sudan Basnet portfolio home">
+            <span className="admin-login-brand-mark">SB</span>
+            <span>
+              <strong>Sudan.</strong>
+              <small>Portfolio admin</small>
+            </span>
+          </a>
+
+          <div className="admin-login-intro">
+            <span className="admin-login-kicker"><i /> Private workspace</span>
+            <h1 id="admin-login-title">Your work,<br />under control.</h1>
+            <p>
+              Sign in to shape portfolio stories, manage your project library,
+              and preview each experience from one focused workspace.
+            </p>
+          </div>
+
+          <div className="admin-login-preview" aria-hidden="true">
+            <span className="admin-login-preview-bar" />
+            <div>
+              <span />
+              <span />
+              <span />
+            </div>
+            <i />
+          </div>
+
+          <p className="admin-login-footnote">
+            <span aria-hidden="true">✦</span> Local demo · No database connected
+          </p>
+        </section>
+
+        <section className="admin-login-panel" aria-labelledby="sign-in-heading">
+          <div className="admin-login-card">
+            <div className="admin-login-card-heading">
+              <span className="admin-login-lock" aria-hidden="true">↗</span>
+              <p className="admin-eyebrow">Welcome back</p>
+              <h2 id="sign-in-heading">Sign in to your dashboard</h2>
+              <p>Enter the demo details to continue to your private workspace.</p>
+            </div>
+
+            <form className="admin-login-form" onSubmit={handleLogin}>
+              <label>
+                <span>Email address</span>
+                <input
+                  autoFocus
+                  autoComplete="username"
+                  inputMode="email"
+                  type="email"
+                  value={email}
+                  onChange={(event) => {
+                    setEmail(event.target.value);
+                    setError("");
+                  }}
+                  placeholder="you@example.com"
+                  aria-invalid={Boolean(error)}
+                  required
+                />
+              </label>
+
+              <label>
+                <span>Password</span>
+                <div className="admin-password-field">
+                  <input
+                    autoComplete="current-password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(event) => {
+                      setPassword(event.target.value);
+                      setError("");
+                    }}
+                    placeholder="Enter your password"
+                    aria-invalid={Boolean(error)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((current) => !current)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
+              </label>
+
+              <p className="admin-login-error" role="alert" aria-live="polite">
+                {error}
+              </p>
+
+              <button className="admin-login-submit" type="submit">
+                Enter workspace <span aria-hidden="true">→</span>
+              </button>
+            </form>
+
+            <div className="admin-demo-access">
+              <div>
+                <span className="admin-demo-dot" aria-hidden="true" />
+                <span>
+                  <strong>Demo access</strong>
+                  <small>Use these local preview credentials</small>
+                </span>
+              </div>
+              <dl>
+                <div><dt>Email</dt><dd>{DEMO_EMAIL}</dd></div>
+                <div><dt>Password</dt><dd>{DEMO_PASSWORD}</dd></div>
+              </dl>
+            </div>
+
+            <p className="admin-login-disclaimer">
+              This is a front-end demo gate. It is not connected to an authentication service yet.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+};
+
+const AdminDashboardEntry = () => {
+  const [isSignedIn, setIsSignedIn] = useState(loadDemoSession);
+
+  const handleLogin = () => {
+    try {
+      window.sessionStorage.setItem(SESSION_STORAGE_KEY, "active");
+    } catch {
+      // The demo still works for this render when storage is unavailable.
+    }
+
+    setIsSignedIn(true);
+  };
+
+  const handleSignOut = () => {
+    try {
+      window.sessionStorage.removeItem(SESSION_STORAGE_KEY);
+    } catch {
+      // Signing out still updates the current render when storage is unavailable.
+    }
+
+    setIsSignedIn(false);
+  };
+
+  return isSignedIn ? (
+    <AdminDashboard onSignOut={handleSignOut} />
+  ) : (
+    <DashboardLogin onLogin={handleLogin} />
+  );
+};
+
+export default AdminDashboardEntry;
