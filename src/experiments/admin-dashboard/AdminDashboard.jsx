@@ -4,8 +4,8 @@ import "./admin-dashboard.css";
 const STORAGE_KEY = "portfolio-admin-demo-content";
 const THEME_STORAGE_KEY = "portfolio-admin-demo-theme";
 const SESSION_STORAGE_KEY = "portfolio-admin-demo-session";
-const DEMO_EMAIL = "admin@demo.local";
-const DEMO_PASSWORD = "portfolio";
+const DEMO_USERNAME = "sdnbasnet5";
+const DEMO_PASSWORD = "Sudan123!";
 
 const SITE_THEMES = [
   {
@@ -776,7 +776,7 @@ const loadDemoSession = () => {
 };
 
 const DashboardLogin = ({ onLogin }) => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -784,7 +784,7 @@ const DashboardLogin = ({ onLogin }) => {
   const handleLogin = (event) => {
     event.preventDefault();
 
-    if (email.trim().toLowerCase() !== DEMO_EMAIL || password !== DEMO_PASSWORD) {
+    if (username.trim() !== DEMO_USERNAME || password !== DEMO_PASSWORD) {
       setError("Those details do not match the demo access shown below.");
       return;
     }
@@ -843,18 +843,17 @@ const DashboardLogin = ({ onLogin }) => {
 
             <form className="admin-login-form" onSubmit={handleLogin}>
               <label>
-                <span>Email address</span>
+                <span>Username</span>
                 <input
                   autoFocus
                   autoComplete="username"
-                  inputMode="email"
-                  type="email"
-                  value={email}
+                  type="text"
+                  value={username}
                   onChange={(event) => {
-                    setEmail(event.target.value);
+                    setUsername(event.target.value);
                     setError("");
                   }}
-                  placeholder="you@example.com"
+                  placeholder="Enter your username"
                   aria-invalid={Boolean(error)}
                   required
                 />
@@ -903,7 +902,7 @@ const DashboardLogin = ({ onLogin }) => {
                 </span>
               </div>
               <dl>
-                <div><dt>Email</dt><dd>{DEMO_EMAIL}</dd></div>
+                <div><dt>Username</dt><dd>{DEMO_USERNAME}</dd></div>
                 <div><dt>Password</dt><dd>{DEMO_PASSWORD}</dd></div>
               </dl>
             </div>
