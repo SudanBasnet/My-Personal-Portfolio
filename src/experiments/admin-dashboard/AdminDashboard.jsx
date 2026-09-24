@@ -780,17 +780,39 @@ const DashboardLogin = ({ onLogin }) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [loginState, setLoginState] = useState("idle");
+  const loginTimerRef = useRef(null);
+  const submitButtonRef = useRef(null);
+
+  useEffect(() => () => window.clearTimeout(loginTimerRef.current), []);
+
+  const resetFeedback = () => {
+    setError("");
+    setLoginState("idle");
+  };
 
   const handleLogin = (event) => {
     event.preventDefault();
 
     if (username.trim() !== DEMO_USERNAME || password !== DEMO_PASSWORD) {
       setError("Those details do not match the demo access shown below.");
+      setLoginState("error");
       return;
     }
 
     setError("");
-    onLogin();
+    setLoginState("checking");
+    loginTimerRef.current = window.setTimeout(() => {
+      setLoginState("success");
+      loginTimerRef.current = window.setTimeout(onLogin, 320);
+    }, 420);
+  };
+
+  const fillDemoCredentials = () => {
+    setUsername(DEMO_USERNAME);
+    setPassword(DEMO_PASSWORD);
+    resetFeedback();
+    window.requestAnimationFrame(() => submitButtonRef.current?.focus());
   };
 
   return (
@@ -841,7 +863,11 @@ const DashboardLogin = ({ onLogin }) => {
               <p>Enter the demo details to continue to your private workspace.</p>
             </div>
 
-            <form className="admin-login-form" onSubmit={handleLogin}>
+            <form
+              className={`admin-login-form admin-login-form-${loginState}`}
+              onSubmit={handleLogin}
+              aria-busy={loginState === "checking"}
+            >
               <label>
                 <span>Username</span>
                 <input
@@ -851,10 +877,12 @@ const DashboardLogin = ({ onLogin }) => {
                   value={username}
                   onChange={(event) => {
                     setUsername(event.target.value);
-                    setError("");
+                    resetFeedback();
                   }}
                   placeholder="Enter your username"
                   aria-invalid={Boolean(error)}
+                  aria-describedby={error ? "admin-login-feedback" : undefined}
+                  disabled={loginState === "checking" || loginState === "success"}
                   required
                 />
               </label>
@@ -868,28 +896,48 @@ const DashboardLogin = ({ onLogin }) => {
                     value={password}
                     onChange={(event) => {
                       setPassword(event.target.value);
-                      setError("");
+                      resetFeedback();
                     }}
                     placeholder="Enter your password"
                     aria-invalid={Boolean(error)}
+                    aria-describedby={error ? "admin-login-feedback" : undefined}
+                    disabled={loginState === "checking" || loginState === "success"}
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((current) => !current)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
+                    disabled={loginState === "checking" || loginState === "success"}
                   >
                     {showPassword ? "Hide" : "Show"}
                   </button>
                 </div>
               </label>
 
-              <p className="admin-login-error" role="alert" aria-live="polite">
-                {error}
+              <p
+                id="admin-login-feedback"
+                className="admin-login-error"
+                role={error ? "alert" : "status"}
+                aria-live="polite"
+              >
+                {error || (loginState === "checking" ? "Checking local demo access…" : "")}
               </p>
 
-              <button className="admin-login-submit" type="submit">
-                Enter workspace <span aria-hidden="true">→</span>
+              <button
+                ref={submitButtonRef}
+                className="admin-login-submit"
+                type="submit"
+                disabled={loginState === "checking" || loginState === "success"}
+              >
+                <span className="admin-login-submit-label">
+                  {loginState === "checking" && "Checking access…"}
+                  {loginState === "success" && "Access confirmed"}
+                  {(loginState === "idle" || loginState === "error") && "Enter workspace"}
+                </span>
+                <span className="admin-login-submit-icon" aria-hidden="true">
+                  {loginState === "checking" ? "···" : loginState === "success" ? "✓" : "→"}
+                </span>
               </button>
             </form>
 
@@ -900,6 +948,9 @@ const DashboardLogin = ({ onLogin }) => {
                   <strong>Demo access</strong>
                   <small>Use these local preview credentials</small>
                 </span>
+                <button type="button" onClick={fillDemoCredentials}>
+                  Fill details
+                </button>
               </div>
               <dl>
                 <div><dt>Username</dt><dd>{DEMO_USERNAME}</dd></div>

@@ -378,6 +378,15 @@
   border-color: rgba(255, 116, 116, 0.58);
 }
 
+.admin-login-form-error input[aria-invalid="true"] {
+  animation: admin-login-shake 240ms ease;
+}
+
+.admin-login-form input:disabled {
+  cursor: wait;
+  opacity: 0.68;
+}
+
 .admin-password-field {
   position: relative;
 }
@@ -408,6 +417,11 @@
   color: #ff9bc7;
 }
 
+.admin-password-field button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
 .admin-login-error {
   min-height: 16px;
   margin: -8px 0 -5px;
@@ -432,14 +446,31 @@
   transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;
 }
 
-.admin-login-submit span {
+.admin-login-submit-icon {
   font-size: 1rem;
 }
 
-.admin-login-submit:hover {
+.admin-login-submit-label {
+  font-size: inherit;
+}
+
+.admin-login-submit:hover:not(:disabled) {
   transform: translateY(-2px);
   filter: brightness(1.06);
   box-shadow: 0 20px 42px rgba(255, 98, 170, 0.22);
+}
+
+.admin-login-submit:disabled {
+  cursor: wait;
+}
+
+.admin-login-form-checking .admin-login-submit-icon {
+  animation: admin-login-pulse 700ms ease-in-out infinite alternate;
+}
+
+.admin-login-form-success .admin-login-submit {
+  background: linear-gradient(105deg, #77e0ad, #b8e572);
+  box-shadow: 0 16px 36px rgba(119, 224, 173, 0.16);
 }
 
 .admin-demo-access {
@@ -454,6 +485,27 @@
   display: flex;
   align-items: flex-start;
   gap: 11px;
+}
+
+.admin-demo-access > div:first-child > button {
+  min-height: 30px;
+  margin-left: auto;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 98, 170, 0.22);
+  border-radius: 8px;
+  background: rgba(255, 98, 170, 0.07);
+  color: #ff9bc7;
+  font-size: 0.58rem;
+  font-weight: 750;
+  cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
+}
+
+.admin-demo-access > div:first-child > button:hover,
+.admin-demo-access > div:first-child > button:focus-visible {
+  border-color: rgba(255, 98, 170, 0.5);
+  background: rgba(255, 98, 170, 0.13);
+  color: #ffd2e6;
 }
 
 .admin-demo-dot {
@@ -514,6 +566,17 @@
   font-size: 0.58rem;
   line-height: 1.55;
   text-align: center;
+}
+
+@keyframes admin-login-shake {
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(3px); }
+  75% { transform: translateX(-2px); }
+}
+
+@keyframes admin-login-pulse {
+  from { opacity: 0.45; }
+  to { opacity: 1; }
 }
 
 .admin-app {
