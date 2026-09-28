@@ -213,6 +213,7 @@ const AdminDashboard = ({ onSignOut }) => {
       total: items.length,
       published: items.filter((item) => item.status === "Published").length,
       drafts: items.filter((item) => item.status === "Draft").length,
+      archived: items.filter((item) => item.status === "Archived").length,
       categories: new Set(items.map((item) => item.category)).size,
     }),
     [items],
@@ -246,6 +247,12 @@ const AdminDashboard = ({ onSignOut }) => {
   const openCreate = () => {
     setEditingId(null);
     setForm(EMPTY_FORM);
+    setIsEditorOpen(true);
+  };
+
+  const openCreateFor = (category) => {
+    setEditingId(null);
+    setForm({ ...EMPTY_FORM, category });
     setIsEditorOpen(true);
   };
 
@@ -352,6 +359,31 @@ const AdminDashboard = ({ onSignOut }) => {
     document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const showStatus = (status) => {
+    setQuery("");
+    setActiveFilter(status);
+    scrollToSection("content-library");
+  };
+
+  const exportWorkspace = () => {
+    const exportPayload = {
+      exportedAt: new Date().toISOString(),
+      theme: selectedTheme,
+      content: items,
+    };
+    const file = new Blob([JSON.stringify(exportPayload, null, 2)], {
+      type: "application/json",
+    });
+    const downloadUrl = window.URL.createObjectURL(file);
+    const downloadLink = document.createElement("a");
+
+    downloadLink.href = downloadUrl;
+    downloadLink.download = `portfolio-workspace-${new Date().toISOString().slice(0, 10)}.json`;
+    downloadLink.click();
+    window.URL.revokeObjectURL(downloadUrl);
+    setNotice("A local workspace backup was downloaded.");
+  };
+
   return (
     <div className={`admin-app dashboard-theme-${selectedTheme}`}>
       <aside className="admin-sidebar" aria-label="Dashboard navigation">
@@ -384,10 +416,6 @@ const AdminDashboard = ({ onSignOut }) => {
             onClick={() => scrollToSection("theme-options")}
           >
             <span aria-hidden="true">◉</span> Themes
-          </button>
-          <button type="button" disabled>
-            <span aria-hidden="true">⚙</span> Settings
-            <small>Soon</small>
           </button>
         </nav>
 
@@ -449,6 +477,31 @@ const AdminDashboard = ({ onSignOut }) => {
           <span className="admin-hero-orb admin-hero-orb-two" aria-hidden="true" />
         </section>
 
+        <section className="admin-quick-actions" aria-labelledby="quick-actions-title">
+          <div className="admin-quick-actions-heading">
+            <div>
+              <p className="admin-eyebrow">Quick start</p>
+              <h2 id="quick-actions-title">What are you creating?</h2>
+            </div>
+            <button type="button" onClick={exportWorkspace}>
+              <span aria-hidden="true">↓</span> Export backup
+            </button>
+          </div>
+          <div className="admin-quick-action-grid">
+            {[
+              ["Project", "◇", "Add a case study or build"],
+              ["Article", "≡", "Start a long-form story"],
+              ["Note", "✦", "Capture a short update"],
+            ].map(([category, icon, description]) => (
+              <button type="button" key={category} onClick={() => openCreateFor(category)}>
+                <span aria-hidden="true">{icon}</span>
+                <span><strong>New {category.toLowerCase()}</strong><small>{description}</small></span>
+                <i aria-hidden="true">→</i>
+              </button>
+            ))}
+          </div>
+        </section>
+
         <section className="admin-stats" aria-label="Content summary">
           <article>
             <span className="stat-icon stat-icon-mint" aria-hidden="true">▦</span>
@@ -491,6 +544,15 @@ const AdminDashboard = ({ onSignOut }) => {
                   <i><em style={{ width: `${items.length ? (count / items.length) * 100 : 0}%` }} /></i>
                 </div>
               ))}
+            </div>
+            <div className="admin-health-actions">
+              <button type="button" onClick={() => showStatus("Draft")}>
+                {stats.drafts ? `Review ${stats.drafts} draft${stats.drafts === 1 ? "" : "s"}` : "No drafts to review"}
+                <span aria-hidden="true">→</span>
+              </button>
+              <button type="button" onClick={() => showStatus("Archived")}>
+                {stats.archived} archived
+              </button>
             </div>
           </article>
 
@@ -573,22 +635,22 @@ const AdminDashboard = ({ onSignOut }) => {
               <tbody>
                 {filteredItems.map((item) => (
                   <tr key={item.id}>
-                    <td>
+                    <td data-label="Content">
                       <strong>{item.title}</strong>
                       <span>{item.summary}</span>
                     </td>
-                    <td>
+                    <td data-label="Type">
                       <span className={`category-tag category-${categoryTone[item.category]}`}>
                         {item.category}
                       </span>
                     </td>
-                    <td>
+                    <td data-label="Status">
                       <span className={`status-tag status-${item.status.toLowerCase()}`}>
                         <i /> {item.status}
                       </span>
                     </td>
-                    <td><time dateTime={item.updatedAt}>{formatDate(item.updatedAt)}</time></td>
-                    <td>
+                    <td data-label="Updated"><time dateTime={item.updatedAt}>{formatDate(item.updatedAt)}</time></td>
+                    <td data-label="Actions">
                       <div className="admin-row-actions">
                         <button type="button" onClick={() => openEdit(item)} aria-label={`Edit ${item.title}`}>
                           Edit
