@@ -21,14 +21,11 @@ import { CommandPalette } from "./components/CommandPalette";
 import { ThemeToggle } from "./components/ThemeToggle";
 import EntryLoader from "./components/EntryLoader";
 import useEntryLoader from "./hooks/useEntryLoader";
+import usePortfolioTheme from "./hooks/usePortfolioTheme";
 
 function App() {
   const showEntryLoader = useEntryLoader(true, 700);
-  const [isDark, setIsDark] = useState(() => {
-    const savedTheme = window.localStorage.getItem("portfolio-theme");
-    if (savedTheme) return savedTheme === "dark";
-    return true;
-  });
+  const { isDark, toggleTheme } = usePortfolioTheme();
   const [isCommandOpen, setIsCommandOpen] = useState(false);
   const reduceMotion = useReducedMotion();
   const { scrollY, scrollYProgress } = useScroll();
@@ -51,17 +48,10 @@ function App() {
   const midLayerY = useSpring(midLayerTarget, { stiffness: 55, damping: 24 });
 
   useEffect(() => {
-    window.localStorage.setItem("portfolio-theme", isDark ? "dark" : "light");
-    document.documentElement.style.colorScheme = isDark ? "dark" : "light";
-  }, [isDark]);
-
-  useEffect(() => {
     const openCommandMenu = () => setIsCommandOpen(true);
     document.addEventListener("open-command-menu", openCommandMenu);
     return () => document.removeEventListener("open-command-menu", openCommandMenu);
   }, []);
-
-  const toggleTheme = () => setIsDark((current) => !current);
 
   return (
     <div className={isDark ? "dark" : ""}>
